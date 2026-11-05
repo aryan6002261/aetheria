@@ -17,10 +17,10 @@ async function testGoogleAuth() {
     const configRes = await fetch(`${baseUrl}/api/auth/config`);
     const configJson = await configRes.json();
     console.log('   Response:', configJson);
-    if (typeof configJson.googleConfigured !== 'boolean') {
-      throw new Error('Config endpoint did not return googleConfigured boolean.');
+    if (!configJson.googleConfigured || !configJson.googleClientId) {
+      throw new Error('Config endpoint did not detect configured Google Client ID.');
     }
-    console.log('   ✅ GET /api/auth/config passed.');
+    console.log('   ✅ GET /api/auth/config successfully verified live Google Client ID.');
 
     // 2. Test POST /api/auth/google-direct (Register new Google user)
     console.log('2. Testing POST /api/auth/google-direct (First-time Gmail sign-in)...');

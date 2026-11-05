@@ -7,7 +7,13 @@ import { authLimiter } from '../middleware/rateLimiter.js';
 import { logAudit } from '../middleware/audit.js';
 
 const router = express.Router();
-const googleClient = config.googleClientId ? new OAuth2Client(config.googleClientId) : null;
+
+function getGoogleClient() {
+  if (config.googleClientId && config.googleClientId !== 'YOUR_GOOGLE_CLIENT_ID' && config.googleClientId.trim().length > 10) {
+    return new OAuth2Client(config.googleClientId);
+  }
+  return null;
+}
 
 // Helper to set HTTP-only cookie
 function setAuthCookie(res, token) {
@@ -132,6 +138,7 @@ router.post('/google', authLimiter, async (req, res) => {
 
     let googlePayload = null;
 
+    const googleClient = getGoogleClient();
     if (googleClient && config.googleClientId) {
       const ticket = await googleClient.verifyIdToken({
         idToken: credential,

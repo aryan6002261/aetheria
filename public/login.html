@@ -129,21 +129,23 @@
           badge.className = 'badge badge-neon-cyan small';
           badge.textContent = 'Google One-Tap Active';
 
-          // Initialize Google Identity Services safely
-          if (window.google && google.accounts && google.accounts.id) {
-            initGoogleGIS(config.googleClientId);
-          } else {
-            window.addEventListener('load', () => {
-              if (window.google && google.accounts && google.accounts.id) {
-                initGoogleGIS(config.googleClientId);
-              }
-            });
-          }
+          // Initialize Google Identity Services as soon as library is available
+          ensureGoogleGISReady(config.googleClientId);
         }
       } catch (err) {
         console.warn('Could not retrieve auth config:', err);
       }
     });
+
+    function ensureGoogleGISReady(clientId, retries = 25) {
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        initGoogleGIS(clientId);
+      } else if (retries > 0) {
+        setTimeout(() => ensureGoogleGISReady(clientId, retries - 1), 200);
+      } else {
+        console.warn('Google Identity Services script did not load in time.');
+      }
+    }
 
     function initGoogleGIS(clientId) {
       const container = document.getElementById('official-google-btn-container');
@@ -165,6 +167,13 @@
         logo_alignment: 'left',
         width: 320
       });
+
+      // Attempt non-intrusive one-tap prompt
+      try {
+        google.accounts.id.prompt();
+      } catch (e) {
+        // Ignored if blocked by browser policy
+      }
     }
 
     // Direct Google / Gmail Login Handler
