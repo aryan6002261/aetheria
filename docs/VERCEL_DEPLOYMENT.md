@@ -120,3 +120,4 @@ To enable official Google One-Tap:
 
 - **Vercel Serverless**:
   Runs `api/index.js` as an auto-scaling serverless function. Database queries, authentication, state mutation, AI generation, and REST endpoints are fully supported on demand with global Edge CDN caching for static files.
+
