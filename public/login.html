@@ -3,55 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AETHERIA · Citizen Authentication Gateway</title>
+  <title>Sign In · Aetheria</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/css/style.css">
   <!-- Google Sign-In Client Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-<body class="d-flex flex-column min-vh-100 justify-content-center align-items-center py-4">
+<body class="d-flex flex-column min-vh-100 justify-content-center align-items-center py-4 position-relative">
 
-  <div class="container" style="max-width: 540px;">
+  <!-- Theme Toggle in Corner -->
+  <div class="position-absolute top-0 end-0 p-3">
+    <button class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="toggleAppTheme()" title="Toggle Light / Dark Mode">
+      <i class="bi bi-moon-fill" id="theme-icon"></i>
+      <span class="small d-none d-sm-inline">Theme</span>
+    </button>
+  </div>
+
+  <div class="container" style="max-width: 500px;">
     <!-- Brand Header -->
     <div class="text-center mb-4">
-      <div class="text-info fs-1 mb-2"><i class="bi bi-disc"></i></div>
-      <h2 class="brand-font text-white text-uppercase" style="letter-spacing: 2.5px;">AETHERIA</h2>
-      <div class="tech-font text-info text-uppercase" style="letter-spacing: 1.8px; font-weight: 600;">Universal Civilian Authentication</div>
-      <p class="text-muted small mt-1">"Your real life is outside. Your second life is inside."</p>
+      <div class="text-primary fs-1 mb-2"><i class="bi bi-globe2"></i></div>
+      <h2 class="fw-bold mb-1">Aetheria</h2>
+      <p class="text-muted small">Virtual Civilization & Social Simulator</p>
     </div>
 
     <!-- Main Authentication Gateway Card -->
-    <div class="cyber-card p-4 p-md-5 mb-4">
+    <div class="card p-4 p-md-5 mb-4 shadow-sm border">
       
       <!-- Primary Section: Google Account Authentication -->
       <div class="mb-4">
         <div class="d-flex align-items-center justify-content-between mb-3">
-          <h4 class="brand-font text-white mb-0 fs-5"><i class="bi bi-google text-danger me-2"></i>Google Sign-In</h4>
-          <span id="google-status-badge" class="badge badge-neon-emerald small">Instant Gmail Ready</span>
+          <h5 class="fw-bold mb-0"><i class="bi bi-google text-danger me-2"></i>Sign In with Google</h5>
+          <span id="google-status-badge" class="badge bg-success-subtle text-success border border-success-subtle small">Google OAuth Ready</span>
         </div>
-        <p class="text-muted small mb-3">Sign in using your Google / Gmail account. Your verified identity creates your persistent citizen profile.</p>
+        <p class="text-muted small mb-3">Sign in with your Google account to access your persistent citizen identity and civilization records.</p>
 
         <!-- Official Google GIS Button Container (dynamically initialized if client ID is set) -->
-        <div id="official-google-btn-container" class="mb-3 d-none text-center"></div>
+        <div id="official-google-btn-container" class="mb-3 d-none text-center d-flex justify-content-center"></div>
 
         <!-- Direct Instant Gmail / Google Account Sign-In Form -->
         <form id="google-direct-form" onsubmit="handleGoogleDirectLogin(event)">
           <div class="mb-3">
-            <label for="google-email-input" class="form-label text-white small tech-font text-uppercase">Google / Gmail Address</label>
+            <label for="google-email-input" class="form-label small">Google / Gmail Address</label>
             <div class="input-group">
-              <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-envelope-at-fill"></i></span>
-              <input type="email" id="google-email-input" class="form-control form-control-cyber" placeholder="youremail@gmail.com" required autocomplete="email">
+              <span class="input-group-text bg-body-secondary"><i class="bi bi-envelope"></i></span>
+              <input type="email" id="google-email-input" class="form-control" placeholder="name@gmail.com" required autocomplete="email">
             </div>
           </div>
           <div class="mb-3">
-            <label for="google-name-input" class="form-label text-white small tech-font text-uppercase">Citizen Display Name (Optional)</label>
+            <label for="google-name-input" class="form-label small">Display Name (Optional)</label>
             <div class="input-group">
-              <span class="input-group-text bg-dark border-secondary text-info"><i class="bi bi-person-badge-fill"></i></span>
-              <input type="text" id="google-name-input" class="form-control form-control-cyber" placeholder="e.g. Elena Vance">
+              <span class="input-group-text bg-body-secondary"><i class="bi bi-person"></i></span>
+              <input type="text" id="google-name-input" class="form-control" placeholder="e.g. Elena Vance">
             </div>
           </div>
-          <button type="submit" id="google-submit-btn" class="btn btn-cyber-primary w-100 py-2 d-flex align-items-center justify-content-center">
+          <button type="submit" id="google-submit-btn" class="btn btn-primary w-100 py-2 d-flex align-items-center justify-content-center">
             <i class="bi bi-google me-2"></i> Continue with Google Account
           </button>
         </form>
@@ -59,23 +66,15 @@
 
       <!-- Collapsible Google Cloud Credentials Guide -->
       <div class="mb-4">
-        <button class="btn btn-sm btn-link text-info text-decoration-none p-0 tech-font small d-flex align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#googleSetupCollapse" aria-expanded="false">
-          <i class="bi bi-gear-fill me-1"></i> Google Cloud OAuth 2.0 Credentials Setup Guide <i class="bi bi-chevron-down ms-1"></i>
+        <button class="btn btn-sm btn-link text-decoration-none p-0 small d-flex align-items-center text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#googleSetupCollapse" aria-expanded="false">
+          <i class="bi bi-info-circle me-1"></i> Google OAuth details & instructions <i class="bi bi-chevron-down ms-1"></i>
         </button>
         <div class="collapse mt-2" id="googleSetupCollapse">
-          <div class="p-3 rounded border border-secondary" style="background: rgba(11, 19, 38, 0.95); font-size: 0.85rem; color: #cbd5e1;">
-            <div class="text-white fw-bold mb-1"><i class="bi bi-info-circle text-info me-1"></i> Why Google Popups Require Setup:</div>
-            <p class="mb-2">Google Identity Services enforces strict origin verification and requires a registered Google Cloud Client ID. Without it, Google blocks popup dialogs.</p>
-            <ol class="ps-3 mb-2" style="line-height: 1.6;">
-              <li>Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="text-info fw-bold">Google Cloud Console</a>.</li>
-              <li>Create an <strong>OAuth 2.0 Client ID</strong> (Web Application).</li>
-              <li>Add <strong>Authorized JavaScript Origins</strong>:
-                <br><code class="text-info">http://localhost:3000</code>
-                <br><code class="text-info">https://your-app.vercel.app</code>
-              </li>
-              <li>Add <code>GOOGLE_CLIENT_ID=your_id_here</code> to your <code>.env</code> file or Vercel Environment Variables.</li>
-            </ol>
-            <div class="text-success small"><i class="bi bi-check-circle-fill me-1"></i> Instant Gmail Sign-In above works immediately without waiting for Google Cloud review!</div>
+          <div class="p-3 rounded border bg-body-tertiary small">
+            <div class="fw-bold mb-1">Google OAuth Status:</div>
+            <p class="mb-2 text-muted">Your Google Cloud Client ID is configured. The popup button renders automatically above.</p>
+            <div class="text-muted mb-2">If using Google's popup while in "Testing" status, ensure your email is added under <a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" class="fw-semibold">Test Users</a> in Google Cloud Console.</div>
+            <div class="text-success small"><i class="bi bi-check-circle-fill me-1"></i> The direct Google login form works for any Gmail address immediately.</div>
           </div>
         </div>
       </div>
@@ -83,36 +82,35 @@
       <!-- Divider -->
       <div class="position-relative text-center my-4">
         <hr class="border-secondary">
-        <span class="position-absolute top-50 start-50 translate-middle px-3 text-info small tech-font text-uppercase" style="background: #0d1424; letter-spacing: 1px;">
-          OR ACTIVE MULTIPLAYER DEMO SLOTS
+        <span class="position-absolute top-50 start-50 translate-middle px-3 text-muted small bg-body">
+          OR QUICK TEST ACCOUNTS
         </span>
       </div>
 
-      <!-- Instant Multiplayer Dev/Demo Accounts -->
+      <!-- Quick Test Accounts -->
       <div class="d-grid gap-2 mb-3">
-        <button class="btn btn-cyber-secondary py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('citizen_alpha@aetheria.universe', 'Citizen Alpha', 'player')">
-          <span><i class="bi bi-person-fill text-info me-2"></i> Citizen Alpha (Player 1)</span>
-          <span class="badge badge-neon-cyan small">Demo</span>
+        <button class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('citizen_alpha@aetheria.universe', 'Citizen Alpha', 'player')">
+          <span><i class="bi bi-person me-2"></i> Citizen Alpha (Player 1)</span>
+          <span class="badge bg-secondary-subtle text-secondary small">Demo</span>
         </button>
-        <button class="btn btn-cyber-secondary py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('citizen_beta@aetheria.universe', 'Citizen Beta', 'player')">
-          <span><i class="bi bi-person-fill text-purple me-2"></i> Citizen Beta (Player 2)</span>
-          <span class="badge badge-neon-purple small">Demo</span>
+        <button class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('citizen_beta@aetheria.universe', 'Citizen Beta', 'player')">
+          <span><i class="bi bi-person me-2"></i> Citizen Beta (Player 2)</span>
+          <span class="badge bg-secondary-subtle text-secondary small">Demo</span>
         </button>
-        <button class="btn btn-cyber-purple py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('admin@aetheria.universe', 'Overseer Valen', 'admin')">
-          <span><i class="bi bi-shield-lock-fill text-warning me-2"></i> Overseer Valen (Admin)</span>
-          <span class="badge badge-neon-amber small">Admin</span>
+        <button class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-between" onclick="quickLogin('admin@aetheria.universe', 'Overseer Valen', 'admin')">
+          <span><i class="bi bi-shield-check text-warning me-2"></i> Overseer Valen (Admin)</span>
+          <span class="badge bg-warning-subtle text-warning small">Admin</span>
         </button>
       </div>
 
     </div>
 
     <!-- Security Assurance Banner -->
-    <div class="cyber-card p-3 text-center text-muted small">
+    <div class="card p-3 text-center text-muted small border shadow-sm">
       <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
         <span><i class="bi bi-shield-check text-success me-1"></i> Google Verified</span>
-        <span><i class="bi bi-key-fill text-info me-1"></i> Password-Free</span>
-        <span><i class="bi bi-lock-fill text-warning me-1"></i> Encrypted JWT Cookies</span>
-        <span><i class="bi bi-cloud-check-fill text-emerald me-1"></i> Vercel & Cloud Ready</span>
+        <span><i class="bi bi-lock text-primary me-1"></i> Encrypted Sessions</span>
+        <span><i class="bi bi-cloud-check text-info me-1"></i> Vercel Ready</span>
       </div>
     </div>
   </div>
@@ -122,14 +120,16 @@
   <script>
     // Initialize Auth Configuration on page load
     document.addEventListener('DOMContentLoaded', async () => {
+      // Sync theme icon
+      updateThemeIcon(document.documentElement.getAttribute('data-bs-theme') || 'light');
+
       try {
         const config = await apiFetch('/api/auth/config');
         if (config.googleConfigured && config.googleClientId) {
           const badge = document.getElementById('google-status-badge');
-          badge.className = 'badge badge-neon-cyan small';
+          badge.className = 'badge bg-primary-subtle text-primary border border-primary-subtle small';
           badge.textContent = 'Google One-Tap Active';
 
-          // Initialize Google Identity Services as soon as library is available
           ensureGoogleGISReady(config.googleClientId);
         }
       } catch (err) {
@@ -151,6 +151,8 @@
       const container = document.getElementById('official-google-btn-container');
       container.classList.remove('d-none');
       
+      const theme = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'filled_black' : 'outline';
+
       google.accounts.id.initialize({
         client_id: clientId,
         callback: handleGoogleCredentialResponse,
@@ -161,7 +163,7 @@
       google.accounts.id.renderButton(container, {
         type: 'standard',
         shape: 'rectangular',
-        theme: 'filled_black',
+        theme: theme,
         text: 'signin_with',
         size: 'large',
         logo_alignment: 'left',
@@ -189,7 +191,7 @@
       }
 
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Authenticating Google Account...';
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Signing In...';
 
       try {
         const data = await apiFetch('/api/auth/google-direct', {
@@ -199,7 +201,7 @@
         showToast('Google account verified! Entering Aetheria...', 'success');
         setTimeout(() => {
           window.location.href = data.redirect || (data.hasCharacter ? '/dashboard.html' : '/character-create.html');
-        }, 500);
+        }, 400);
       } catch (err) {
         btn.disabled = false;
         btn.innerHTML = '<i class="bi bi-google me-2"></i> Continue with Google Account';
@@ -217,7 +219,7 @@
         showToast('Google identity authenticated successfully!', 'success');
         setTimeout(() => {
           window.location.href = data.redirect || (data.hasCharacter ? '/dashboard.html' : '/character-create.html');
-        }, 600);
+        }, 500);
       } catch (err) {
         showToast('Google authentication failed: ' + err.message, 'danger');
       }
@@ -233,7 +235,7 @@
         showToast(`Authenticated as ${displayName}!`, 'success');
         setTimeout(() => {
           window.location.href = data.redirect || (data.hasCharacter ? '/dashboard.html' : '/character-create.html');
-        }, 500);
+        }, 400);
       } catch (err) {
         showToast('Authentication error: ' + err.message, 'danger');
       }
