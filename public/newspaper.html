@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · The Veridian Chronicle & Planetary Archives</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- Newspaper Masthead -->
+    <div class="cyber-card p-4 p-md-5 mb-5 text-center position-relative" style="background: radial-gradient(circle at 50% 20%, rgba(0,240,255,0.08) 0%, rgba(8,14,28,0.98) 70%);">
+      <div class="tech-font text-info text-uppercase small mb-2" style="letter-spacing: 2px;">
+        OFFICIAL AUTONOMOUS PLANETARY GAZETTE · VERIDIA PRIME
+      </div>
+      <h1 class="display-4 brand-font text-white mb-2 text-uppercase" style="letter-spacing: 3px;">
+        The Veridian Chronicle
+      </h1>
+      <div class="tech-font text-muted small border-top border-bottom border-secondary py-2 my-3 d-flex justify-content-around">
+        <span>EDITION: <strong class="text-white" id="news-edition">Vol. 2185 - Evening Dispatch</strong></span>
+        <span>EDITOR: <strong class="text-info">Aria Solis</strong></span>
+        <span>STATUS: <strong class="text-success">SYNCHRONIZED WITH DATABASE LEDGER</strong></span>
+      </div>
+
+      <!-- Lead Story -->
+      <div class="text-start mt-4">
+        <h2 class="brand-font text-white fs-3 mb-3" id="news-headline">Loading evening dispatch...</h2>
+        <p class="lead text-info tech-font fs-5 mb-3" id="news-lead"></p>
+        <div class="text-white small mb-4" id="news-body" style="line-height: 1.8; font-size: 1.05rem;"></div>
+
+        <div class="p-3 rounded-2 bg-dark border border-secondary" id="news-editorial-box">
+          <span class="text-info tech-font fw-bold small"><i class="bi bi-chat-quote-fill me-1"></i>EDITORIAL NOTE:</span>
+          <span class="text-muted small fst-italic ms-2" id="news-editorial">"Civilization is forged by the daily choices of our citizens."</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historical Archive Timeline -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="brand-font text-white fs-5 mb-0"><i class="bi bi-archive-fill text-info me-2"></i>Persistent Historical Records</h4>
+      <span class="badge badge-neon-cyan tech-font">IMMUTABLE CHRONOLOGY</span>
+    </div>
+
+    <div id="timeline-container">
+      <div class="text-center py-4 text-muted">Reading historical archives...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('newspaper');
+      loadNewspaperAndTimeline();
+    });
+
+    async function loadNewspaperAndTimeline() {
+      try {
+        // Load Newspaper
+        const news = await apiFetch('/api/history/newspaper');
+        if (news.headline) {
+          document.getElementById('news-headline').innerText = news.headline;
+          document.getElementById('news-lead').innerText = news.lead;
+          document.getElementById('news-body').innerText = news.body;
+          document.getElementById('news-edition').innerText = news.edition || 'Vol. 2185';
+          if (news.editorial) {
+            document.getElementById('news-editorial').innerText = `"${news.editorial}"`;
+          }
+        }
+
+        // Load Timeline
+        const hist = await apiFetch('/api/history/timeline');
+        const container = document.getElementById('timeline-container');
+        const records = hist.timeline || [];
+
+        if (records.length === 0) {
+          container.innerHTML = '<div class="cyber-card p-4 text-center text-muted">No historical records logged yet.</div>';
+          return;
+        }
+
+        container.innerHTML = records.map(r => `
+          <div class="cyber-card p-4 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge badge-neon-cyan tech-font text-uppercase">${r.category}</span>
+              <span class="tech-font text-muted small">YEAR ${r.world_year} · DAY ${r.world_day}</span>
+            </div>
+            <h5 class="brand-font text-white fs-6 mb-2">${r.headline}</h5>
+            <p class="text-muted small mb-0">${r.article}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load archives: ' + err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

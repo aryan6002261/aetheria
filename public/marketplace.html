@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Global Planetary Marketplace</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 1040px;">
+    <!-- Title & Search Bar -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <h3 class="brand-font text-white mb-1">Global Planetary Marketplace</h3>
+        <p class="text-muted small mb-0">Decentralized exchange of manufactured goods, quantum visors, and kinetic exosuits.</p>
+      </div>
+      <div class="d-flex gap-2" style="max-width: 320px;">
+        <input type="text" id="market-search" class="form-control form-control-cyber form-control-sm" placeholder="Filter goods..." oninput="filterMarketplace()">
+      </div>
+    </div>
+
+    <!-- Marketplace Listings Grid -->
+    <div class="row g-4" id="marketplace-grid">
+      <div class="col-12 text-center text-muted py-5">Connecting to planetary market exchange...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let allListings = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('marketplace');
+      loadMarketplaceListings();
+    });
+
+    async function loadMarketplaceListings() {
+      try {
+        const data = await apiFetch('/api/marketplace/listings');
+        allListings = data.listings || [];
+        renderListings(allListings);
+      } catch (err) {
+        showToast('Failed to load marketplace: ' + err.message, 'danger');
+      }
+    }
+
+    function renderListings(items) {
+      const grid = document.getElementById('marketplace-grid');
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="col-12 text-center text-muted py-5">No active market listings match your query.</div>';
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <div class="col-md-6 col-lg-4">
+          <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge badge-neon-cyan tech-font">${item.product_category || 'Hardware'}</span>
+                <span class="text-warning small"><i class="bi bi-star-fill me-1"></i>${item.quality_rating || 4.5}</span>
+              </div>
+              <h5 class="brand-font text-white fs-6 mb-1">${item.title}</h5>
+              <div class="text-info small mb-2">Sold by: ${item.seller_name || 'Merchant'}</div>
+              <p class="text-muted small mb-3">${item.description || 'Quality guaranteed.'}</p>
+              
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted small">In Stock: <strong class="text-white">${item.quantity}</strong></span>
+                <span class="display-6 brand-font text-success fs-5">₡${parseFloat(item.price).toFixed(2)}</span>
+              </div>
+            </div>
+
+            <button class="btn btn-cyber-primary btn-sm w-100 py-2" onclick="purchaseItem(${item.id}, '${item.title}', ${item.price})">
+              <i class="bi bi-bag-check-fill me-1"></i> Purchase Item
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterMarketplace() {
+      const q = document.getElementById('market-search').value.toLowerCase().trim();
+      const filtered = allListings.filter(l => 
+        l.title.toLowerCase().includes(q) || 
+        (l.description && l.description.toLowerCase().includes(q)) ||
+        (l.product_category && l.product_category.toLowerCase().includes(q))
+      );
+      renderListings(filtered);
+    }
+
+    async function purchaseItem(listingId, title, price) {
+      if (!confirm(`Confirm purchase of "${title}" for ₡${parseFloat(price).toFixed(2)}?`)) return;
+
+      try {
+        const res = await apiFetch(`/api/marketplace/buy/${listingId}`, { method: 'POST' });
+        showToast(res.message, 'success');
+        loadMarketplaceListings();
+        renderCyberNavbar('marketplace'); // Refresh HUD wallet
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

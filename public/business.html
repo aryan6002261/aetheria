@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Corporation & Enterprise Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- Title & Action -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="brand-font text-white mb-1">Corporation & Industrial Dashboard</h3>
+        <p class="text-muted small mb-0">Establish commercial entities, manufacture quantum hardware, and hire citizen employees.</p>
+      </div>
+      <button class="btn btn-cyber-primary" data-bs-toggle="modal" data-bs-target="#registerBizModal">
+        <i class="bi bi-plus-circle me-1"></i> Register Enterprise (₡500)
+      </button>
+    </div>
+
+    <!-- My Businesses -->
+    <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-briefcase text-info me-2"></i>My Commercial Enterprises</h4>
+    <div id="my-businesses-container" class="mb-5">
+      <div class="text-muted small text-center py-4">Loading your enterprise registry...</div>
+    </div>
+
+    <!-- Planetary Corporate Directory -->
+    <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-buildings text-warning me-2"></i>Planetary Corporate Directory</h4>
+    <div class="row g-4" id="corporate-directory-grid">
+      <div class="col-12 text-center text-muted py-4">Scanning company registry...</div>
+    </div>
+  </div>
+
+  <!-- Register Business Modal -->
+  <div class="modal fade" id="registerBizModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content cyber-card border-secondary text-white">
+        <div class="modal-header border-secondary py-3">
+          <h5 class="modal-title brand-font fs-6">Register Commercial Enterprise</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="register-biz-form" onsubmit="handleRegisterBusiness(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Enterprise Legal Name</label>
+              <input type="text" id="biz-name" class="form-control form-control-cyber" placeholder="Hyperion Quantum Dynamics" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Sector Category</label>
+              <select id="biz-category" class="form-select form-select-cyber">
+                <option value="Technology">Technology & Hardware</option>
+                <option value="Retail">Retail & Consumer Goods</option>
+                <option value="Hospitality">Hospitality & Lounges</option>
+                <option value="Media">Media & Holo-Broadcasting</option>
+                <option value="Manufacturing">Heavy Manufacturing</option>
+                <option value="Finance">Quantitative Finance</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Corporate Description</label>
+              <textarea id="biz-desc" class="form-control form-control-cyber" rows="3" placeholder="Pioneering next-generation quantum chips..."></textarea>
+            </div>
+            <div class="p-2 rounded bg-dark border border-secondary text-muted small">
+              <i class="bi bi-info-circle text-info me-1"></i> Incorporating costs ₡500.00 Credits deducted from your wallet ledger.
+            </div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-cyber-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-cyber-primary btn-sm">Incorporate Enterprise</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manufacture Product Modal -->
+  <div class="modal fade" id="manufactureModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content cyber-card border-secondary text-white">
+        <div class="modal-header border-secondary py-3">
+          <h5 class="modal-title brand-font fs-6">Manufacture & List Product</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="manufacture-form" onsubmit="handleManufactureProduct(event)">
+          <input type="hidden" id="manuf-biz-id">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Product Name</label>
+              <input type="text" id="prod-name" class="form-control form-control-cyber" placeholder="Neural Sync Rig Mk.III" required>
+            </div>
+            <div class="row g-3 mb-3">
+              <div class="col-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Category</label>
+                <input type="text" id="prod-cat" class="form-control form-control-cyber" placeholder="Hardware" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Selling Price (₡)</label>
+                <input type="number" id="prod-price" class="form-control form-control-cyber" placeholder="150" step="0.01" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Product Specifications</label>
+              <textarea id="prod-desc" class="form-control form-control-cyber" rows="2" placeholder="High efficiency quantum telemetry device..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-cyber-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-cyber-primary btn-sm">Manufacture & List</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('business');
+      loadBusinessData();
+    });
+
+    async function loadBusinessData() {
+      try {
+        const data = await apiFetch('/api/business/my-businesses');
+        const myBiz = data.myBusinesses || [];
+        const dir = data.directory || [];
+
+        const myContainer = document.getElementById('my-businesses-container');
+        if (myBiz.length === 0) {
+          myContainer.innerHTML = '<div class="cyber-card p-4 text-center text-muted">You do not own any commercial enterprises. Click "Register Enterprise" above to incorporate!</div>';
+        } else {
+          myContainer.innerHTML = myBiz.map(b => `
+            <div class="cyber-card p-4 mb-3">
+              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <h4 class="brand-font text-white fs-5 mb-0">${b.name}</h4>
+                    <span class="badge badge-neon-cyan">${b.category}</span>
+                  </div>
+                  <p class="text-muted small mb-2">${b.description || 'Commercial entity.'}</p>
+                  <div class="d-flex gap-3 small text-muted">
+                    <span>Revenue: <strong class="text-success">₡${parseFloat(b.revenue || 0).toFixed(2)}</strong></span>
+                    <span>Products: <strong class="text-white">${b.products_count || 0}</strong></span>
+                    <span>Employees: <strong class="text-info">${b.employees_count || 0}</strong></span>
+                  </div>
+                </div>
+                <button class="btn btn-cyber-primary btn-sm" onclick="openManufactureModal(${b.id})">
+                  <i class="bi bi-box-seam me-1"></i> Manufacture & List Product
+                </button>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        const dirGrid = document.getElementById('corporate-directory-grid');
+        dirGrid.innerHTML = dir.map(d => `
+          <div class="col-md-6">
+            <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="badge badge-neon-purple tech-font">${d.category}</span>
+                  <span class="text-warning small"><i class="bi bi-star-fill me-1"></i>${d.reputation} Rep</span>
+                </div>
+                <h5 class="brand-font text-white fs-6 mb-1">${d.name}</h5>
+                <div class="text-info small mb-2">Founder: ${d.owner_name} · ${d.city_name}</div>
+                <p class="text-muted small mb-3">${d.description || 'Active corporation.'}</p>
+              </div>
+              <div class="border-top border-secondary pt-2 text-end text-success fw-bold small">
+                Total Revenue: ₡${parseFloat(d.revenue || 0).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load businesses: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleRegisterBusiness(e) {
+      e.preventDefault();
+      const name = document.getElementById('biz-name').value.trim();
+      const category = document.getElementById('biz-category').value;
+      const description = document.getElementById('biz-desc').value.trim();
+
+      try {
+        const res = await apiFetch('/api/business/register', {
+          method: 'POST',
+          body: { name, category, description }
+        });
+        showToast(res.message, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('registerBizModal')).hide();
+        loadBusinessData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    function openManufactureModal(bizId) {
+      document.getElementById('manuf-biz-id').value = bizId;
+      new bootstrap.Modal(document.getElementById('manufactureModal')).show();
+    }
+
+    async function handleManufactureProduct(e) {
+      e.preventDefault();
+      const bizId = document.getElementById('manuf-biz-id').value;
+      const name = document.getElementById('prod-name').value.trim();
+      const category = document.getElementById('prod-cat').value.trim();
+      const sellingPrice = document.getElementById('prod-price').value;
+      const description = document.getElementById('prod-desc').value.trim();
+
+      try {
+        const res = await apiFetch(`/api/business/${bizId}/products`, {
+          method: 'POST',
+          body: { name, category, sellingPrice, description }
+        });
+        showToast(res.message, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('manufactureModal')).hide();
+        loadBusinessData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

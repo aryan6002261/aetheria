@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Metropolis Directory</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- City Hero Card -->
+    <div class="cyber-card p-4 p-md-5 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge badge-neon-cyan tech-font">METROPOLIS DISTRICT</span>
+        <span class="pulse-beacon"></span>
+      </div>
+
+      <h2 class="display-6 brand-font text-white mb-2" id="city-title">Aethel City</h2>
+      <p class="text-muted mb-4" id="city-desc">The planetary capital, famed for its towering crystal spires, quantum research networks, and thriving commerce.</p>
+
+      <div class="d-flex flex-wrap gap-2">
+        <a href="/education.html" class="btn btn-cyber-primary btn-sm">
+          <i class="bi bi-mortarboard me-1"></i> Local Academies
+        </a>
+        <a href="/career.html" class="btn btn-cyber-secondary btn-sm">
+          <i class="bi bi-briefcase me-1"></i> Job Opportunities
+        </a>
+        <a href="/lounges.html" class="btn btn-cyber-purple btn-sm">
+          <i class="bi bi-cup-hot me-1"></i> District Lounges
+        </a>
+      </div>
+    </div>
+
+    <!-- Districts & Communities -->
+    <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-houses-fill text-info me-2"></i>Communities & Districts</h4>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="brand-font text-white fs-6 mb-2">Nexus Spire District</h5>
+          <p class="text-muted small">High-density commercial and residential hub in central Aethel City. Home to corporate headquarters and high-yield banking towers.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="brand-font text-white fs-6 mb-2">Cyber Promenade</h5>
+          <p class="text-muted small">Vibrant district with cafes, open artisanal hardware markets, holographic art installations, and neon walkways.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="brand-font text-white fs-6 mb-2">Astro-Dock Commons</h5>
+          <p class="text-muted small">Orbital spaceport community of navigators, cartographers, and deep-space researchers monitoring the binary suns.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('explorer');
+      const urlParams = new URLSearchParams(window.location.search);
+      const cityId = urlParams.get('id') || 1;
+      if (cityId == 2) {
+        document.getElementById('city-title').innerText = 'Nova Haven';
+        document.getElementById('city-desc').innerText = 'A coastal orbital telemetry port and university enclave dedicated to deep space cartography.';
+      }
+    });
+  </script>
+</body>
+</html>

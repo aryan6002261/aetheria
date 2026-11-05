@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Social Connections & Friends</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- Title & Add Friend Bar -->
+    <div class="cyber-card p-4 mb-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+          <h3 class="brand-font text-white mb-1">Citizen Network Connections</h3>
+          <p class="text-muted small mb-0">Build relationships and establish direct quantum comm links.</p>
+        </div>
+        <form id="add-friend-form" onsubmit="handleAddFriend(event)" class="d-flex gap-2">
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-info">@</span>
+            <input type="text" id="add-friend-handle" class="form-control form-control-cyber form-control-sm" placeholder="citizen_handle" required>
+          </div>
+          <button type="submit" class="btn btn-cyber-primary btn-sm flex-shrink-0">
+            <i class="bi bi-person-plus-fill me-1"></i> Connect
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Pending Requests Section -->
+    <div id="pending-section" class="cyber-card p-4 mb-4 d-none">
+      <h5 class="brand-font text-white fs-6 mb-3"><i class="bi bi-bell-fill text-warning me-2"></i>Pending Incoming Requests</h5>
+      <div id="pending-list" class="row g-3"></div>
+    </div>
+
+    <!-- Friends Grid -->
+    <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-people-fill text-info me-2"></i>Active Connections</h4>
+    <div class="row g-4" id="friends-grid">
+      <div class="col-12 text-center text-muted py-5">Scanning citizen frequency...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('social');
+      loadFriendsData();
+    });
+
+    async function loadFriendsData() {
+      try {
+        const data = await apiFetch('/api/social/friends');
+        const friends = data.friends || [];
+        const pending = data.pendingRequests || [];
+
+        // Render Pending
+        const pendingSection = document.getElementById('pending-section');
+        const pendingList = document.getElementById('pending-list');
+        if (pending.length > 0) {
+          pendingSection.classList.remove('d-none');
+          pendingList.innerHTML = pending.map(p => `
+            <div class="col-md-6">
+              <div class="p-3 rounded bg-dark border border-warning d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <div class="rounded-circle border border-info p-1 me-2" style="width: 36px; height: 36px;">
+                    <img src="${p.sprite_url || '/img/avatars/default.png'}" alt="Avatar" class="w-100 h-100 rounded-circle" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${p.username}'">
+                  </div>
+                  <div>
+                    <div class="fw-bold text-white small">${p.character_name}</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">@${p.username}</div>
+                  </div>
+                </div>
+                <button class="btn btn-cyber-primary btn-sm py-1 px-3" onclick="acceptFriendRequest(${p.request_id})">
+                  Accept
+                </button>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          pendingSection.classList.add('d-none');
+        }
+
+        // Render Friends Grid
+        const grid = document.getElementById('friends-grid');
+        if (friends.length === 0) {
+          grid.innerHTML = '<div class="col-12 text-center text-muted py-5">No connections established yet. Transmit requests to citizens!</div>';
+          return;
+        }
+
+        grid.innerHTML = friends.map(f => `
+          <div class="col-md-6 col-lg-4">
+            <div class="cyber-card p-4 h-100 text-center">
+              <div class="rounded-circle border border-info p-2 mx-auto mb-3 position-relative" style="width: 72px; height: 72px; background: #0b1329;">
+                <img src="${f.sprite_url || '/img/avatars/default.png'}" alt="Friend" class="w-100 h-100 rounded-circle" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=${f.username}'">
+                <span class="position-absolute bottom-0 end-0 p-1 ${f.is_online ? 'bg-success' : 'bg-secondary'} border border-dark rounded-circle"></span>
+              </div>
+              <h5 class="brand-font text-white fs-6 mb-1">${f.character_name}</h5>
+              <div class="text-info tech-font small mb-2">@${f.username} · LVL ${f.level}</div>
+              <p class="text-muted small mb-3">Age: ${f.virtual_age}</p>
+              
+              <div class="d-flex gap-2">
+                <a href="/profile.html?id=${f.id}" class="btn btn-cyber-secondary btn-sm flex-grow-1">Profile</a>
+                <a href="/chat.html" class="btn btn-cyber-primary btn-sm flex-grow-1">Comms</a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load friends: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleAddFriend(e) {
+      e.preventDefault();
+      const handle = document.getElementById('add-friend-handle').value.trim().toLowerCase();
+      if (!handle) return;
+
+      try {
+        // Resolve profile ID from handle
+        const profRes = await apiFetch(`/api/player/profile/${handle}`);
+        const targetId = profRes.profile.id;
+
+        const res = await apiFetch('/api/social/friends/request', {
+          method: 'POST',
+          body: { targetProfileId: targetId }
+        });
+        showToast(res.message, 'success');
+        document.getElementById('add-friend-handle').value = '';
+        loadFriendsData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    async function acceptFriendRequest(requestId) {
+      try {
+        const res = await apiFetch('/api/social/friends/accept', {
+          method: 'POST',
+          body: { requestId }
+        });
+        showToast(res.message, 'success');
+        loadFriendsData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

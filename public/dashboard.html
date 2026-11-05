@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Citizen Operations HUD</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <!-- Dynamic HUD Navbar Mount -->
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container-fluid px-lg-4 py-3">
+    <!-- Top HUD Row: Identity & Quick Telemetry -->
+    <div class="row g-3 mb-4">
+      <!-- Player Primary Bioscan Card -->
+      <div class="col-lg-8">
+        <div class="cyber-card p-4">
+          <div class="d-flex flex-column flex-sm-row align-items-center gap-4">
+            <!-- Avatar Frame -->
+            <div class="rounded-3 p-2 border border-info position-relative flex-shrink-0" style="width: 110px; height: 110px; background: #0b1329;">
+              <img id="dash-avatar-img" src="/img/avatars/default.png" alt="Citizen Avatar" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=AetheriaPilot'">
+              <span class="position-absolute bottom-0 start-50 translate-middle-x badge badge-neon-cyan px-2 py-0" style="font-size: 0.65rem;" id="dash-level-badge">LVL 1</span>
+            </div>
+
+            <!-- Identity Info -->
+            <div class="flex-grow-1 text-center text-sm-start">
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start gap-2 mb-1">
+                <h3 class="text-white brand-font fs-4 mb-0" id="dash-name">Citizen Loading...</h3>
+                <span class="badge badge-neon-emerald tech-font" id="dash-stage-badge">Early Adulthood</span>
+                <span class="badge badge-neon-purple tech-font" id="dash-rep-badge"><i class="bi bi-star-fill me-1"></i>REP 100</span>
+              </div>
+              <div class="text-info tech-font small mb-2" id="dash-handle">@citizen</div>
+              <p class="text-muted small mb-2" id="dash-bio">Loading citizen neurological imprint...</p>
+              
+              <!-- XP Bar -->
+              <div class="d-flex align-items-center gap-2">
+                <span class="tech-font small text-muted">XP:</span>
+                <div class="progress-cyber flex-grow-1">
+                  <div class="progress-bar-cyan h-100" id="dash-xp-bar" style="width: 25%;"></div>
+                </div>
+                <span class="tech-font small text-info" id="dash-xp-text">0 / 250</span>
+              </div>
+            </div>
+
+            <!-- Quick Action: Age Progression Milestone -->
+            <div class="flex-shrink-0 text-center border-start-sm border-secondary ps-sm-3">
+              <div class="tech-font text-muted small text-uppercase">Virtual Age</div>
+              <div class="display-6 brand-font text-white fw-bold mb-1" id="dash-age">19</div>
+              <button class="btn btn-cyber-secondary btn-sm" onclick="progressVirtualAge()">
+                <i class="bi bi-hourglass-split me-1"></i> Advance Age
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planetary Status Telemetry -->
+      <div class="col-lg-4">
+        <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="tech-font text-info text-uppercase small"><i class="bi bi-broadcast me-1"></i> Planetary Telemetry</span>
+              <span class="pulse-beacon"></span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted small">Planet Server:</span>
+              <span class="text-white fw-bold tech-font" id="dash-planet">Veridia Prime</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted small">Sovereign State:</span>
+              <span class="text-info fw-bold tech-font" id="dash-country">Neo-Arcadia</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted small">Current Metropolis:</span>
+              <span class="text-white fw-bold tech-font" id="dash-city">Aethel City</span>
+            </div>
+          </div>
+          <div class="d-grid mt-2">
+            <a href="/explorer.html" class="btn btn-cyber-primary btn-sm">
+              <i class="bi bi-map me-1"></i> Open Orbital Map
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vital Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-danger fs-3 mb-1"><i class="bi bi-heart-pulse-fill"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Vitality</div>
+          <div class="fs-4 brand-font text-white" id="stat-health">100%</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-warning fs-3 mb-1"><i class="bi bi-lightning-charge-fill"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Energy</div>
+          <div class="fs-4 brand-font text-white" id="stat-energy">100%</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-success fs-3 mb-1"><i class="bi bi-emoji-smile-fill"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Happiness</div>
+          <div class="fs-4 brand-font text-white" id="stat-happiness">85%</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-info fs-3 mb-1"><i class="bi bi-cpu-fill"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Intellect</div>
+          <div class="fs-4 brand-font text-white" id="stat-intellect">55</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-purple fs-3 mb-1" style="color: var(--neon-purple);"><i class="bi bi-chat-heart-fill"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Charisma</div>
+          <div class="fs-4 brand-font text-white" id="stat-charisma">50</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="cyber-card p-3 text-center">
+          <div class="text-primary fs-3 mb-1"><i class="bi bi-shield-shaded"></i></div>
+          <div class="text-muted small tech-font text-uppercase">Strength</div>
+          <div class="fs-4 brand-font text-white" id="stat-strength">50</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operations & Quick Shift Row -->
+    <div class="row g-3 mb-4">
+      <!-- Active Career & Work Terminal -->
+      <div class="col-lg-4">
+        <div class="cyber-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-white brand-font fs-6 mb-0"><i class="bi bi-briefcase-fill text-info me-2"></i>Career Terminal</h5>
+            <a href="/career.html" class="small text-info text-decoration-none">Market <i class="bi bi-arrow-right"></i></a>
+          </div>
+
+          <div id="dash-job-container">
+            <div class="p-3 rounded-2 mb-3" style="background: rgba(0, 240, 255, 0.05); border: 1px solid var(--border-neon);">
+              <div class="fs-5 text-white fw-bold tech-font" id="dash-job-title">Civilian Independent</div>
+              <div class="text-muted small mb-2" id="dash-job-salary">Base Payout: ₡0.00 / shift</div>
+              <div class="progress-cyber mb-1">
+                <div class="progress-bar-cyan h-100" id="dash-job-perf-bar" style="width: 75%;"></div>
+              </div>
+              <small class="text-muted" id="dash-job-perf-text">Performance: 75/100</small>
+            </div>
+
+            <button class="btn btn-cyber-primary w-100 py-2" id="btn-work-shift" onclick="performWorkShift()">
+              <i class="bi bi-hammer me-1"></i> Work Daily Shift (Collect Salary)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Balance & Ledger Quick Access -->
+      <div class="col-lg-4">
+        <div class="cyber-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-white brand-font fs-6 mb-0"><i class="bi bi-coin text-success me-2"></i>Double-Entry Wallet</h5>
+            <a href="/wallet.html" class="small text-success text-decoration-none">Ledger <i class="bi bi-arrow-right"></i></a>
+          </div>
+
+          <div class="text-center p-3 rounded-2 mb-3" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div class="text-muted small tech-font text-uppercase">Liquid Credits</div>
+            <div class="display-6 brand-font text-success fw-bold my-1" id="dash-wallet-amount">₡500.00</div>
+            <div class="text-muted small">Planet Currency: Veridian Credits</div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a href="/wallet.html" class="btn btn-cyber-secondary flex-grow-1 py-2 text-center">
+              <i class="bi bi-send me-1"></i> Transfer
+            </a>
+            <a href="/marketplace.html" class="btn btn-cyber-primary flex-grow-1 py-2 text-center">
+              <i class="bi bi-cart me-1"></i> Shop
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI NPC Quick Comm Link -->
+      <div class="col-lg-4">
+        <div class="cyber-card cyber-card-purple p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-white brand-font fs-6 mb-0"><i class="bi bi-cpu-fill text-purple me-2" style="color: var(--neon-purple);"></i>AI Citizens (NPCs)</h5>
+            <span class="badge badge-neon-purple small">Autonomous</span>
+          </div>
+
+          <p class="text-muted small mb-3">Engage in dialogue with persistent planetary personalities who maintain long-term memory of you.</p>
+
+          <div class="list-group list-group-flush mb-3" id="dash-npc-list">
+            <!-- Populated via API -->
+            <div class="text-muted small text-center py-2">Loading local figures...</div>
+          </div>
+
+          <button class="btn btn-cyber-purple w-100 py-2" data-bs-toggle="modal" data-bs-target="#npcChatModal">
+            <i class="bi bi-chat-quote-fill me-1"></i> Open Holo-Comm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Missions & Quick Links -->
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="cyber-card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-white brand-font fs-6 mb-0"><i class="bi bi-flag-fill text-danger me-2"></i>Active Missions</h5>
+            <a href="/missions.html" class="small text-danger text-decoration-none">View All Missions <i class="bi bi-arrow-right"></i></a>
+          </div>
+
+          <div id="dash-missions-list">
+            <!-- Populated via API -->
+            <div class="text-muted small text-center py-3">Loading active planetary missions...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="cyber-card p-4">
+          <h5 class="text-white brand-font fs-6 mb-3"><i class="bi bi-newspaper text-info me-2"></i>Veridian Chronicle</h5>
+          <div id="dash-news-snippet">
+            <h6 class="text-white tech-font mb-1" id="dash-news-headline">The Era of Expansion Underway</h6>
+            <p class="text-muted small mb-3" id="dash-news-lead">Recent records confirm steady economic growth and citizen democratic engagement across Solaris Basin.</p>
+            <a href="/newspaper.html" class="btn btn-cyber-secondary btn-sm w-100">
+              <i class="bi bi-book-half me-1"></i> Read Full Edition
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NPC Chat Modal -->
+  <div class="modal fade" id="npcChatModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content cyber-card cyber-card-purple border-secondary text-white">
+        <div class="modal-header border-secondary py-3">
+          <h5 class="modal-title brand-font fs-6" id="npc-modal-title">Holo-Comm: Dr. Elena Rostova</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="chat-messages mb-3" id="npc-chat-history" style="height: 280px; overflow-y: auto;">
+            <div class="chat-bubble chat-bubble-npc mb-2">
+              <div class="fw-bold text-info small mb-1" id="npc-dialogue-name">Dr. Elena Rostova:</div>
+              <div id="npc-dialogue-text">Greetings, citizen. The quantum frequency signals from our deep-space telemetry array are behaving unusually today. What is on your mind?</div>
+            </div>
+          </div>
+          <form id="npc-chat-form" onsubmit="sendNpcChatMessage(event)">
+            <input type="hidden" id="npc-target-id" value="1">
+            <div class="input-group">
+              <input type="text" id="npc-message-input" class="form-control form-control-cyber" placeholder="Speak to citizen..." required autocomplete="off">
+              <button class="btn btn-cyber-purple" type="submit">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let currentProfile = null;
+    let npcsList = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('dashboard');
+      loadDashboardData();
+    });
+
+    async function loadDashboardData() {
+      try {
+        const authData = await getCurrentUser();
+        if (!authData || !authData.hasCharacter) {
+          window.location.href = authData ? '/character-create.html' : '/login.html';
+          return;
+        }
+
+        currentProfile = authData.profile;
+
+        // Populate Identity
+        document.getElementById('dash-name').innerText = currentProfile.character_name;
+        document.getElementById('dash-handle').innerText = '@' + currentProfile.username;
+        document.getElementById('dash-bio').innerText = currentProfile.bio || 'Citizen of the Frontier.';
+        document.getElementById('dash-age').innerText = currentProfile.virtual_age;
+        document.getElementById('dash-level-badge').innerText = 'LVL ' + currentProfile.level;
+        document.getElementById('dash-stage-badge').innerText = currentProfile.life_stage;
+        document.getElementById('dash-rep-badge').innerHTML = `<i class="bi bi-star-fill me-1"></i>REP ${currentProfile.reputation}`;
+
+        const xp = currentProfile.experience_points || 0;
+        const targetXp = currentProfile.level * 250;
+        const pct = Math.min(100, Math.round((xp / targetXp) * 100));
+        document.getElementById('dash-xp-bar').style.width = pct + '%';
+        document.getElementById('dash-xp-text').innerText = `${xp} / ${targetXp} XP`;
+
+        document.getElementById('dash-planet').innerText = currentProfile.planet_name || 'Veridia Prime';
+        document.getElementById('dash-country').innerText = currentProfile.country_name || 'Neo-Arcadia';
+        document.getElementById('dash-city').innerText = currentProfile.city_name || 'Aethel City';
+        document.getElementById('dash-wallet-amount').innerText = formatCredits(currentProfile.wallet_balance || 500);
+
+        if (currentProfile.sprite_url) {
+          document.getElementById('dash-avatar-img').src = currentProfile.sprite_url;
+        }
+
+        // Fetch detailed profile stats & employment
+        const fullProf = await apiFetch(`/api/player/profile/${currentProfile.id}`);
+        if (fullProf.stats) {
+          document.getElementById('stat-health').innerText = (fullProf.stats.health || 100) + '%';
+          document.getElementById('stat-energy').innerText = (fullProf.stats.energy || 100) + '%';
+          document.getElementById('stat-happiness').innerText = (fullProf.stats.happiness || 85) + '%';
+          document.getElementById('stat-intellect').innerText = fullProf.stats.intellect || 55;
+          document.getElementById('stat-charisma').innerText = fullProf.stats.charisma || 50;
+          document.getElementById('stat-strength').innerText = fullProf.stats.strength || 50;
+        }
+
+        if (fullProf.employment) {
+          document.getElementById('dash-job-title').innerText = fullProf.employment.title;
+          document.getElementById('dash-job-salary').innerText = `Base Payout: ₡${parseFloat(fullProf.employment.salary).toFixed(2)} / shift`;
+          document.getElementById('dash-job-perf-bar').style.width = fullProf.employment.performance + '%';
+          document.getElementById('dash-job-perf-text').innerText = `Performance: ${fullProf.employment.performance}/100`;
+        }
+
+        // Fetch Missions
+        loadMissions();
+
+        // Fetch NPCs
+        loadNpcs();
+
+        // Fetch Newspaper snippet
+        loadNewsSnippet();
+
+      } catch (err) {
+        console.error('Error loading dashboard:', err);
+      }
+    }
+
+    async function loadMissions() {
+      try {
+        const data = await apiFetch('/api/missions');
+        const container = document.getElementById('dash-missions-list');
+        if (!data.missions || data.missions.length === 0) {
+          container.innerHTML = '<div class="text-muted small text-center py-2">No active missions right now.</div>';
+          return;
+        }
+
+        container.innerHTML = data.missions.slice(0, 3).map(m => `
+          <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded-2" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.05);">
+            <div>
+              <div class="fw-bold text-white small">${m.title}</div>
+              <div class="text-muted" style="font-size: 0.75rem;">${m.description}</div>
+            </div>
+            <div class="text-end">
+              ${m.status === 'claimed' ? `
+                <span class="badge badge-neon-emerald">CLAIMED</span>
+              ` : m.progress >= m.target ? `
+                <button class="btn btn-cyber-primary btn-sm py-1 px-2" onclick="claimMission(${m.mission_id})">Claim ₡${m.currency_reward}</button>
+              ` : `
+                <span class="badge badge-neon-cyan">${m.progress}/${m.target}</span>
+              `}
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.warn('Missions load error:', err);
+      }
+    }
+
+    async function loadNpcs() {
+      try {
+        const data = await apiFetch('/api/npc/directory');
+        npcsList = data.npcs || [];
+        const container = document.getElementById('dash-npc-list');
+        if (npcsList.length === 0) return;
+
+        container.innerHTML = npcsList.slice(0, 3).map(npc => `
+          <button class="list-group-item list-group-item-action bg-transparent border-0 text-white p-2 d-flex align-items-center" onclick="openNpcModal(${npc.id})">
+            <div class="rounded-circle border border-purple p-1 me-2" style="width: 32px; height: 32px; color: var(--neon-purple);">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="text-start" style="line-height: 1.2;">
+              <div class="tech-font fw-bold" style="font-size: 0.85rem;">${npc.name}</div>
+              <div class="text-muted" style="font-size: 0.7rem;">${npc.occupation}</div>
+            </div>
+          </button>
+        `).join('');
+      } catch (err) {
+        console.warn('NPCs load error:', err);
+      }
+    }
+
+    async function loadNewsSnippet() {
+      try {
+        const data = await apiFetch('/api/history/newspaper');
+        if (data.headline) {
+          document.getElementById('dash-news-headline').innerText = data.headline;
+          document.getElementById('dash-news-lead').innerText = data.lead;
+        }
+      } catch (err) {
+        console.warn('News load error:', err);
+      }
+    }
+
+    async function performWorkShift() {
+      try {
+        const res = await apiFetch('/api/career/work', { method: 'POST' });
+        showToast(res.message, 'success');
+        loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    async function progressVirtualAge() {
+      try {
+        const res = await apiFetch('/api/player/progress-age', { method: 'POST' });
+        showToast(res.message, 'info');
+        loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    async function claimMission(missionId) {
+      try {
+        const res = await apiFetch(`/api/missions/${missionId}/claim`, { method: 'POST' });
+        showToast(res.message, 'success');
+        loadDashboardData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    function openNpcModal(npcId) {
+      const npc = npcsList.find(n => n.id === npcId);
+      if (!npc) return;
+      document.getElementById('npc-target-id').value = npc.id;
+      document.getElementById('npc-modal-title').innerText = `Holo-Comm: ${npc.name}`;
+      document.getElementById('npc-dialogue-name').innerText = npc.name + ':';
+      document.getElementById('npc-dialogue-text').innerText = `Hello ${currentProfile?.character_name || 'citizen'}. As ${npc.occupation}, I am pleased to connect with you. How can I assist you today?`;
+      const modal = new bootstrap.Modal(document.getElementById('npcChatModal'));
+      modal.show();
+    }
+
+    async function sendNpcChatMessage(e) {
+      e.preventDefault();
+      const inputEl = document.getElementById('npc-message-input');
+      const historyEl = document.getElementById('npc-chat-history');
+      const npcId = document.getElementById('npc-target-id').value;
+      const message = inputEl.value.trim();
+      if (!message) return;
+
+      // Append user bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-bubble chat-bubble-sent mb-2';
+      userBubble.innerText = message;
+      historyEl.appendChild(userBubble);
+      inputEl.value = '';
+      historyEl.scrollTop = historyEl.scrollHeight;
+
+      // Typing indicator
+      const typingEl = document.createElement('div');
+      typingEl.className = 'text-muted tech-font small mb-2';
+      typingEl.innerText = 'Neural link transmitting...';
+      historyEl.appendChild(typingEl);
+      historyEl.scrollTop = historyEl.scrollHeight;
+
+      try {
+        const data = await apiFetch(`/api/npc/${npcId}/chat`, {
+          method: 'POST',
+          body: { message }
+        });
+
+        typingEl.remove();
+
+        const npcBubble = document.createElement('div');
+        npcBubble.className = 'chat-bubble chat-bubble-npc mb-2';
+        npcBubble.innerHTML = `<div class="fw-bold text-info small mb-1">${data.npc.name}:</div>${data.reply}`;
+        historyEl.appendChild(npcBubble);
+        historyEl.scrollTop = historyEl.scrollHeight;
+      } catch (err) {
+        typingEl.remove();
+        showToast('Comm transmission failed: ' + err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

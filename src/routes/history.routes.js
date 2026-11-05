@@ -1,0 +1,65 @@
+import express from 'express';
+import { query } from '../db/db.js';
+import { optionalAuth } from '../middleware/auth.js';
+import { generateNewspaperArticle } from '../services/ai.service.js';
+
+const router = express.Router();
+
+/**
+ * Get Planetary Historical Timeline Archive
+ */
+router.get('/timeline', optionalAuth, async (req, res) => {
+  try {
+    const planetId = req.query.planetId ? parseInt(req.query.planetId, 10) : 1;
+
+    const historyRes = await query(`
+      SELECT * FROM historical_records
+      WHERE planet_id = $1
+      ORDER BY world_year DESC, world_day DESC, id DESC
+      LIMIT 50;
+    `, [planetId]);
+
+    const planetRes = await query('SELECT name, world_year, world_day, timeline_status FROM planets WHERE id = $1;', [planetId]);
+
+    return res.json({
+      planet: planetRes.rows[0] || {},
+      timeline: historyRes.rows
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch timeline: ' + err.message });
+  }
+});
+
+/**
+ * Get The Veridian Chronicle (AI Newspaper Grounded in Real DB Events)
+ */
+router.get('/newspaper', optionalAuth, async (req, res) => {
+  try {
+    const planetId = req.query.planetId ? parseInt(req.query.planetId, 10) : 1;
+
+    // Fetch actual recent database events
+    const recentRecords = await query(`
+      SELECT category, headline, article, world_year, world_day 
+      FROM historical_records 
+      WHERE planet_id = $1 
+      ORDER BY recorded_at DESC 
+      LIMIT 5;
+    `, [planetId]);
+
+    const article = await generateNewspaperArticle({
+      events: recentRecords.rows,
+      planetName: 'Veridia Prime'
+    });
+
+    return res.json({
+      newspaper: 'The Veridian Chronicle',
+      editor: 'Aria Solis',
+      ...article,
+      recentEvents: recentRecords.rows
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to generate newspaper: ' + err.message });
+  }
+});
+
+export default router;

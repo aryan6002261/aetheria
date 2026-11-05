@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Planetary Elections & Democratic Voting</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="brand-font text-white mb-1">Democratic Elections Portal</h3>
+        <p class="text-muted small mb-0">Cast your authenticated biometric ballot. Every citizen shapes the leadership of Neo-Arcadia.</p>
+      </div>
+    </div>
+
+    <!-- Active Election Card -->
+    <div id="active-election-card" class="cyber-card p-4 p-md-5 mb-5">
+      <div class="text-center py-4 text-muted">Scanning electoral register...</div>
+    </div>
+
+    <!-- Candidates Ballot -->
+    <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-people text-info me-2"></i>Certified Candidates</h4>
+    <div class="row g-4" id="candidates-grid">
+      <div class="col-12 text-center text-muted py-4">Loading candidate platforms...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let activeElection = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('elections');
+      loadElectionsData();
+    });
+
+    async function loadElectionsData() {
+      try {
+        const data = await apiFetch('/api/government/elections');
+        const elections = data.elections || [];
+        const candidates = data.candidates || [];
+
+        const card = document.getElementById('active-election-card');
+        if (elections.length === 0) {
+          card.innerHTML = '<div class="text-center py-4 text-muted">No elections currently active. Check back next cycle!</div>';
+          return;
+        }
+
+        activeElection = elections[0];
+        card.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-neon-amber tech-font">OFFICIAL ELECTORAL SESSION</span>
+            <span class="text-info tech-font small">STATUS: ${activeElection.status.toUpperCase()}</span>
+          </div>
+          <h2 class="display-6 brand-font text-white mb-2">${activeElection.title}</h2>
+          <div class="text-muted small mb-3">Position: <strong class="text-info">${activeElection.position}</strong></div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge badge-neon-cyan fs-6"><i class="bi bi-check2-square me-1"></i>${activeElection.total_votes || 0} Ballots Cast</span>
+            ${activeElection.has_voted ? `
+              <span class="badge badge-neon-emerald fs-6"><i class="bi bi-check-circle-fill me-1"></i>You Have Voted</span>
+            ` : `
+              <span class="badge badge-neon-rose fs-6">Ballot Pending</span>
+            `}
+          </div>
+        `;
+
+        const grid = document.getElementById('candidates-grid');
+        grid.innerHTML = candidates.map(c => `
+          <div class="col-md-6 col-lg-4">
+            <div class="cyber-card p-4 h-100 d-flex flex-column justify-content-between text-center">
+              <div>
+                <div class="rounded-circle border border-info p-2 mx-auto mb-3" style="width: 72px; height: 72px; background: #0b1329;">
+                  <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${c.username}" alt="Candidate" class="w-100 h-100">
+                </div>
+                <h5 class="brand-font text-white fs-6 mb-1">${c.character_name}</h5>
+                <div class="text-info tech-font small mb-2">@${c.username}</div>
+                <p class="text-muted small mb-3">Age: ${c.virtual_age} · Platform: Civic unity, accelerated research & fair tariffs.</p>
+              </div>
+
+              ${activeElection.has_voted ? `
+                <button class="btn btn-cyber-secondary btn-sm w-100 disabled" disabled>Vote Recorded</button>
+              ` : `
+                <button class="btn btn-cyber-primary btn-sm w-100" onclick="castVote(${activeElection.id}, ${c.id}, '${c.character_name}')">
+                  <i class="bi bi-fingerprint me-1"></i> Vote for Candidate
+                </button>
+              `}
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load elections: ' + err.message, 'danger');
+      }
+    }
+
+    async function castVote(electionId, candidateProfileId, candidateName) {
+      if (!confirm(`Confirm your authenticated vote for ${candidateName}?`)) return;
+
+      try {
+        const res = await apiFetch('/api/government/vote', {
+          method: 'POST',
+          body: { electionId, candidateProfileId }
+        });
+        showToast(res.message, 'success');
+        loadElectionsData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

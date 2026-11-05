@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Character Creation Matrix</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-4">
+
+  <!-- Dynamic HUD Navbar Mount -->
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-4" style="max-width: 960px;">
+    <!-- Title -->
+    <div class="text-center mb-4">
+      <h2 class="brand-font text-white text-uppercase" style="letter-spacing: 2px;">Character Creation Matrix</h2>
+      <p class="text-muted small">Select your path: Craft your identity through Custom Mode or embrace the cosmic dice with Random Life Mode.</p>
+    </div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="d-flex justify-content-center gap-3 mb-4">
+      <button class="btn btn-cyber-primary px-4 active" id="btn-mode-custom" onclick="switchMode('custom')">
+        <i class="bi bi-sliders me-2"></i> Custom Mode
+      </button>
+      <button class="btn btn-cyber-purple px-4" id="btn-mode-random" onclick="switchMode('random')">
+        <i class="bi bi-dice-5-fill me-2"></i> Random Life Mode
+      </button>
+    </div>
+
+    <div class="row g-4">
+      <!-- Left Column: Holographic Avatar Preview & Summary -->
+      <div class="col-lg-5">
+        <div class="cyber-card p-4 text-center h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="tech-font text-info text-uppercase small mb-3">Holographic Bioscan</div>
+            
+            <div class="rounded-3 p-4 mx-auto mb-3 position-relative" style="width: 220px; height: 220px; background: radial-gradient(circle, rgba(0,240,255,0.15) 0%, rgba(5,7,14,0.9) 70%); border: 2px solid var(--border-neon); box-shadow: 0 0 25px rgba(0,240,255,0.2);">
+              <img id="avatar-preview-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=AetheriaPilot" alt="Avatar Preview" class="w-100 h-100" style="object-fit: contain;">
+              <span class="position-absolute bottom-0 start-50 translate-middle-x badge badge-neon-cyan mb-2">TELEMETRY READY</span>
+            </div>
+
+            <h4 class="text-white brand-font fs-5 mb-1" id="preview-name">Cadet Citizen</h4>
+            <div class="text-info tech-font small mb-3" id="preview-username">@cadet_01</div>
+            
+            <p class="text-muted small px-3" id="preview-bio">Citizen awaiting planetary assignment in Solaris Basin.</p>
+          </div>
+
+          <!-- Starting Allocation Overview -->
+          <div class="border-top border-secondary pt-3 text-start small">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Target Planet:</span>
+              <span class="text-white fw-bold">Veridia Prime</span>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">Birthplace:</span>
+              <span class="text-info fw-bold" id="preview-city">Aethel City</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-muted">Starting Balance:</span>
+              <span class="text-success fw-bold">₡500.00 Credits</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Form -->
+      <div class="col-lg-7">
+        <!-- CUSTOM MODE FORM -->
+        <div id="section-custom-mode" class="cyber-card p-4">
+          <h4 class="brand-font text-white fs-5 mb-3"><i class="bi bi-person-fill text-info me-2"></i>Custom Identity</h4>
+
+          <form id="custom-character-form" onsubmit="handleCreateCharacter(event, 'custom')">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Character Full Name</label>
+                <input type="text" id="custom-name" class="form-control form-control-cyber" placeholder="Valen Cross" required oninput="updatePreview()">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Username (Handle)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-dark border-secondary text-info">@</span>
+                  <input type="text" id="custom-username" class="form-control form-control-cyber" placeholder="valen_cross" required oninput="updatePreview()">
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Gender Presentation</label>
+                <select id="custom-gender" class="form-select form-select-cyber">
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Synthetic AI Identity">Synthetic AI Identity</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small tech-font text-uppercase">Starting Birthplace</label>
+                <select id="custom-city" class="form-select form-select-cyber" onchange="updatePreview()">
+                  <option value="1">Aethel City (Capital Spire)</option>
+                  <option value="2">Nova Haven (Orbital Telemetry Coast)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Appearance Controls -->
+            <div class="border-top border-secondary pt-3 mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase mb-2">Neural Avatar Chassis</label>
+              <div class="row g-2">
+                <div class="col-4">
+                  <label class="small text-muted">Chassis Style</label>
+                  <select id="custom-style" class="form-select form-select-cyber form-select-sm" onchange="updatePreview()">
+                    <option value="bottts">Cyber Droid</option>
+                    <option value="pixel-art">Pixel Operative</option>
+                    <option value="identicon">Quantum Crest</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label class="small text-muted">Suit Frame</label>
+                  <select id="custom-clothing" class="form-select form-select-cyber form-select-sm">
+                    <option value="titanium_jacket">Titanium Longcoat</option>
+                    <option value="orbital_exosuit">Orbital Exosuit</option>
+                    <option value="bio_fabric_robe">Bio-Fabric Robe</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label class="small text-muted">Ocular Glow</label>
+                  <select id="custom-eye" class="form-select form-select-cyber form-select-sm">
+                    <option value="cyber_amber">Amber Glow</option>
+                    <option value="neon_cyan">Neon Cyan</option>
+                    <option value="quantum_violet">Quantum Violet</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label text-muted small tech-font text-uppercase">Citizen Biography / Motto</label>
+              <textarea id="custom-bio" class="form-control form-control-cyber" rows="3" placeholder="Pioneer seeking fortune in the outer sectors..." oninput="updatePreview()"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-cyber-primary w-100 py-3 fs-5">
+              <i class="bi bi-check-circle-fill me-2"></i> Instantiate Citizen Profile
+            </button>
+          </form>
+        </div>
+
+        <!-- RANDOM LIFE MODE SECTION -->
+        <div id="section-random-mode" class="cyber-card cyber-card-purple p-4 d-none">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="brand-font text-white fs-5 mb-0"><i class="bi bi-dice-5-fill text-purple me-2" style="color: var(--neon-purple);"></i>Cosmic Generation</h4>
+            <button class="btn btn-cyber-purple btn-sm" id="btn-reroll" onclick="fetchRandomLifePreview()">
+              <i class="bi bi-arrow-repeat me-1"></i> Reroll Circumstances (<span id="rerolls-left">3</span> Left)
+            </button>
+          </div>
+
+          <div class="p-3 mb-3 rounded-2" style="background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.2);">
+            <div class="mb-2">
+              <span class="text-muted small">Allocated Name:</span>
+              <span class="text-white fw-bold ms-2" id="random-name">Loading...</span>
+            </div>
+            <div class="mb-2">
+              <span class="text-muted small">Family Background:</span>
+              <p class="text-info small mb-0 mt-1 fst-italic" id="random-bg">Generating lineage...</p>
+            </div>
+            <div class="mb-2">
+              <span class="text-muted small">Economic Circumstances:</span>
+              <span class="badge badge-neon-amber ms-2" id="random-wealth">Middle Class</span>
+            </div>
+            <div>
+              <span class="text-muted small">Starting City:</span>
+              <span class="text-white fw-bold ms-2" id="random-city">Aethel City</span>
+            </div>
+          </div>
+
+          <form id="random-character-form" onsubmit="handleCreateCharacter(event, 'random')">
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Desired Handle / Username</label>
+              <div class="input-group">
+                <span class="input-group-text bg-dark border-secondary text-info">@</span>
+                <input type="text" id="random-username" class="form-control form-control-cyber" placeholder="cosmic_traveler" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-cyber-purple w-100 py-3 fs-5">
+              <i class="bi bi-rocket-takeoff-fill me-2"></i> Accept Circumstances & Enter Universe
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let randomData = null;
+    let rerollsRemaining = 3;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCyberNavbar('character-create');
+      updatePreview();
+    });
+
+    function switchMode(mode) {
+      if (mode === 'custom') {
+        document.getElementById('section-custom-mode').classList.remove('d-none');
+        document.getElementById('section-random-mode').classList.add('d-none');
+        document.getElementById('btn-mode-custom').classList.add('active');
+        document.getElementById('btn-mode-random').classList.remove('active');
+        updatePreview();
+      } else {
+        document.getElementById('section-custom-mode').classList.add('d-none');
+        document.getElementById('section-random-mode').classList.remove('d-none');
+        document.getElementById('btn-mode-random').classList.add('active');
+        document.getElementById('btn-mode-custom').classList.remove('active');
+        if (!randomData) fetchRandomLifePreview();
+      }
+    }
+
+    function updatePreview() {
+      const name = document.getElementById('custom-name').value.trim() || 'Cadet Citizen';
+      const username = document.getElementById('custom-username').value.trim() || 'cadet_01';
+      const bio = document.getElementById('custom-bio').value.trim() || 'Citizen awaiting planetary assignment in Solaris Basin.';
+      const citySelect = document.getElementById('custom-city');
+      const cityName = citySelect.options[citySelect.selectedIndex].text;
+      const style = document.getElementById('custom-style').value;
+
+      document.getElementById('preview-name').innerText = name;
+      document.getElementById('preview-username').innerText = '@' + username.toLowerCase().replace(/[^a-z0-9_]/g, '');
+      document.getElementById('preview-bio').innerText = bio;
+      document.getElementById('preview-city').innerText = cityName.split(' ')[0];
+      document.getElementById('avatar-preview-img').src = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(username || name)}`;
+    }
+
+    async function fetchRandomLifePreview() {
+      if (rerollsRemaining <= 0) {
+        showToast('No rerolls remaining for this session.', 'warning');
+        return;
+      }
+      try {
+        const data = await apiFetch('/api/player/random-preview');
+        randomData = data;
+        rerollsRemaining--;
+        document.getElementById('rerolls-left').innerText = rerollsRemaining;
+        if (rerollsRemaining <= 0) {
+          document.getElementById('btn-reroll').disabled = true;
+        }
+
+        document.getElementById('random-name').innerText = data.suggestedName;
+        document.getElementById('random-bg').innerText = data.background;
+        document.getElementById('random-wealth').innerText = data.wealthTier;
+        document.getElementById('random-city').innerText = data.cityName;
+
+        const handle = data.suggestedName.toLowerCase().replace(/\s+/g, '_');
+        document.getElementById('random-username').value = handle;
+
+        document.getElementById('preview-name').innerText = data.suggestedName;
+        document.getElementById('preview-username').innerText = '@' + handle;
+        document.getElementById('preview-bio').innerText = data.background;
+        document.getElementById('preview-city').innerText = data.cityName;
+        document.getElementById('avatar-preview-img').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(handle)}`;
+      } catch (err) {
+        showToast('Failed to fetch random life: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleCreateCharacter(e, mode) {
+      e.preventDefault();
+
+      let payload = {};
+      if (mode === 'custom') {
+        payload = {
+          birthMode: 'custom',
+          characterName: document.getElementById('custom-name').value.trim(),
+          username: document.getElementById('custom-username').value.trim(),
+          gender: document.getElementById('custom-gender').value,
+          bio: document.getElementById('custom-bio').value.trim(),
+          selectedCityId: document.getElementById('custom-city').value,
+          avatarStyle: document.getElementById('custom-style').value,
+          clothing: document.getElementById('custom-clothing').value,
+          eyeColor: document.getElementById('custom-eye').value,
+        };
+      } else {
+        if (!randomData) return;
+        payload = {
+          birthMode: 'random',
+          characterName: randomData.suggestedName,
+          username: document.getElementById('random-username').value.trim(),
+          gender: 'Non-binary',
+          bio: randomData.background,
+          selectedCityId: randomData.cityId,
+          avatarStyle: 'bottts'
+        };
+      }
+
+      try {
+        const res = await apiFetch('/api/player/create', {
+          method: 'POST',
+          body: payload
+        });
+        showToast('Character successfully created! Arriving on Veridia Prime...', 'success');
+        setTimeout(() => {
+          window.location.href = res.redirect || '/dashboard.html';
+        }, 800);
+      } catch (err) {
+        showToast('Creation error: ' + err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>

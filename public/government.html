@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AETHERIA · Supreme Cyber-Parliament</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container py-3" style="max-width: 960px;">
+    <!-- Government Executive Card -->
+    <div class="cyber-card p-4 p-md-5 mb-4 position-relative">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge badge-neon-amber tech-font">SOVEREIGN EXECUTIVE COUNCIL</span>
+        <span class="pulse-beacon"></span>
+      </div>
+
+      <h2 class="display-6 brand-font text-white mb-2" id="gov-leader">Supreme Council</h2>
+      <div class="text-info tech-font fs-6 mb-3" id="gov-type">Representative Cyber-Parliament · Neo-Arcadia</div>
+
+      <div class="row g-3 border-top border-secondary pt-3 mb-4">
+        <div class="col-6 col-sm-4">
+          <div class="text-muted small tech-font text-uppercase">Public Treasury</div>
+          <div class="fs-5 text-warning fw-bold tech-font" id="gov-treasury">₡1,500,000.00</div>
+        </div>
+        <div class="col-6 col-sm-4">
+          <div class="text-muted small tech-font text-uppercase">Citizen Tax Rate</div>
+          <div class="fs-5 text-success fw-bold tech-font" id="gov-tax">7.50%</div>
+        </div>
+        <div class="col-12 col-sm-4">
+          <div class="text-muted small tech-font text-uppercase">National Budget</div>
+          <div class="fs-5 text-info fw-bold tech-font" id="gov-budget">₡3,500,000.00</div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-wrap gap-2">
+        <a href="/elections.html" class="btn btn-cyber-primary btn-sm">
+          <i class="bi bi-fingerprint me-1"></i> Cast Ballot in General Election
+        </a>
+        <button class="btn btn-cyber-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposeLawModal">
+          <i class="bi bi-file-earmark-plus me-1"></i> Propose Citizen Bill
+        </button>
+      </div>
+    </div>
+
+    <!-- Political Parties & Laws Row -->
+    <div class="row g-4 mb-4">
+      <!-- Political Parties -->
+      <div class="col-lg-5">
+        <div class="cyber-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="brand-font text-white fs-6 mb-0"><i class="bi bi-people-fill text-info me-2"></i>Political Parties</h5>
+            <button class="btn btn-cyber-secondary btn-sm py-1 px-2" data-bs-toggle="modal" data-bs-target="#createPartyModal">
+              <i class="bi bi-plus-lg"></i> Register
+            </button>
+          </div>
+
+          <div class="list-group list-group-flush" id="parties-list">
+            <div class="text-muted small py-3 text-center">Loading party rosters...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passed & Proposed Laws -->
+      <div class="col-lg-7">
+        <div class="cyber-card p-4 h-100">
+          <h5 class="brand-font text-white fs-6 mb-3"><i class="bi bi-shield-check text-warning me-2"></i>Planetary Legislation & Laws</h5>
+          <div id="laws-list">
+            <div class="text-muted small py-3 text-center">Loading statutory records...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Propose Law Modal -->
+  <div class="modal fade" id="proposeLawModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content cyber-card border-secondary text-white">
+        <div class="modal-header border-secondary py-3">
+          <h5 class="modal-title brand-font fs-6">Propose Citizen Bill</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="propose-law-form" onsubmit="handleProposeLaw(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Bill Title</label>
+              <input type="text" id="bill-title" class="form-control form-control-cyber" placeholder="Planetary Solar Energy Subsidies Act" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Category</label>
+              <select id="bill-category" class="form-select form-select-cyber">
+                <option value="Economic">Economic Policy</option>
+                <option value="Civil Rights">Civil Rights & Protections</option>
+                <option value="Education">Education & Quantum Research</option>
+                <option value="Public Works">Public Works & Infrastructure</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Statutory Description</label>
+              <textarea id="bill-desc" class="form-control form-control-cyber" rows="3" placeholder="Allocates civic budget to clean fusion development..." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-cyber-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-cyber-primary btn-sm">Submit to Parliament</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Party Modal -->
+  <div class="modal fade" id="createPartyModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content cyber-card border-secondary text-white">
+        <div class="modal-header border-secondary py-3">
+          <h5 class="modal-title brand-font fs-6">Register Political Party</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="create-party-form" onsubmit="handleCreateParty(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Party Name</label>
+              <input type="text" id="party-name" class="form-control form-control-cyber" placeholder="Techno-Progressive Coalition" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Abbreviation (Acronym)</label>
+              <input type="text" id="party-abbr" class="form-control form-control-cyber" placeholder="TPC" maxlength="6" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted small tech-font text-uppercase">Core Ideology</label>
+              <textarea id="party-ideology" class="form-control form-control-cyber" rows="2" placeholder="Scientific progress, automated infrastructure..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-cyber-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-cyber-primary btn-sm">Register Party</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/socket-client.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('government');
+      loadGovernmentData();
+    });
+
+    async function loadGovernmentData() {
+      try {
+        const data = await apiFetch('/api/government/current');
+        const gov = data.government;
+        const laws = data.laws || [];
+        const parties = data.parties || [];
+
+        if (gov) {
+          document.getElementById('gov-leader').innerText = gov.leader_name || 'Supreme Council';
+          document.getElementById('gov-type').innerText = `${gov.form} · ${gov.country_name}`;
+          document.getElementById('gov-treasury').innerText = `₡${parseFloat(gov.treasury_balance || 0).toLocaleString()}`;
+          document.getElementById('gov-tax').innerText = `${gov.tax_rate}%`;
+          document.getElementById('gov-budget').innerText = `₡${parseFloat(gov.budget || 0).toLocaleString()}`;
+        }
+
+        // Render Parties
+        const partiesContainer = document.getElementById('parties-list');
+        partiesContainer.innerHTML = parties.map(p => `
+          <div class="p-2 mb-2 rounded-2" style="background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="badge badge-neon-cyan tech-font">${p.abbreviation}</span>
+              <span class="text-muted small">${p.members_count || 1} Members</span>
+            </div>
+            <div class="fw-bold text-white small">${p.name}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">${p.ideology}</div>
+          </div>
+        `).join('');
+
+        // Render Laws
+        const lawsContainer = document.getElementById('laws-list');
+        lawsContainer.innerHTML = laws.map(l => `
+          <div class="p-3 mb-2 rounded-2" style="background: rgba(15,23,42,0.6); border: 1px solid var(--border-neon);">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="badge ${l.status === 'enacted' ? 'badge-neon-emerald' : 'badge-neon-amber'} tech-font text-uppercase">${l.status}</span>
+              <span class="text-muted small tech-font">${l.category}</span>
+            </div>
+            <div class="fw-bold text-white mb-1">${l.title}</div>
+            <p class="text-muted small mb-0">${l.description}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        showToast('Failed to load government state: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleProposeLaw(e) {
+      e.preventDefault();
+      const title = document.getElementById('bill-title').value.trim();
+      const category = document.getElementById('bill-category').value;
+      const description = document.getElementById('bill-desc').value.trim();
+
+      try {
+        const res = await apiFetch('/api/government/laws/propose', {
+          method: 'POST',
+          body: { title, category, description }
+        });
+        showToast(res.message, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('proposeLawModal')).hide();
+        loadGovernmentData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+
+    async function handleCreateParty(e) {
+      e.preventDefault();
+      const name = document.getElementById('party-name').value.trim();
+      const abbreviation = document.getElementById('party-abbr').value.trim();
+      const ideology = document.getElementById('party-ideology').value.trim();
+
+      try {
+        const res = await apiFetch('/api/government/parties/create', {
+          method: 'POST',
+          body: { name, abbreviation, ideology }
+        });
+        showToast(res.message, 'success');
+        bootstrap.Modal.getInstance(document.getElementById('createPartyModal')).hide();
+        loadGovernmentData();
+      } catch (err) {
+        showToast(err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>
