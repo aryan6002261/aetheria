@@ -43,6 +43,21 @@ router.get('/config', (req, res) => {
 });
 
 /**
+ * Instant Seamless World Entry (No Login Barrier)
+ */
+router.get('/enter', authenticate, async (req, res) => {
+  const profileRes = await query(`
+    SELECT id FROM player_profiles WHERE user_id = $1 ORDER BY id DESC LIMIT 1;
+  `, [req.user.id]);
+  const hasCharacter = profileRes.rows.length > 0;
+  return res.json({
+    success: true,
+    hasCharacter,
+    redirect: hasCharacter ? '/dashboard.html' : '/character-create.html'
+  });
+});
+
+/**
  * Direct Google / Gmail Sign-In
  * Allows any citizen to register and authenticate using their real Google/Gmail account
  * without requiring pre-configured Google Cloud Console keys.
@@ -305,14 +320,16 @@ router.get('/me', authenticate, async (req, res) => {
     const profileRes = await query(`
       SELECT p.*, a.sprite_url, a.style AS avatar_style,
              w.balance AS wallet_balance,
-             c.name AS country_name, ci.name AS city_name, pl.name AS planet_name
+             c.name AS country_name, c.flag_emoji, c.government_type, c.leader_title, c.leader_name, c.constitution_title, c.tax_rate,
+             ci.name AS city_name, pl.name AS planet_name, pl.world_year, pl.world_day
       FROM player_profiles p
       LEFT JOIN avatars a ON a.id = p.avatar_id
       LEFT JOIN wallets w ON w.profile_id = p.id AND w.planet_id = p.planet_id
       LEFT JOIN countries c ON c.id = p.country_id
       LEFT JOIN cities ci ON ci.id = p.city_id
       LEFT JOIN planets pl ON pl.id = p.planet_id
-      WHERE p.user_id = $1;
+      WHERE p.user_id = $1
+      ORDER BY p.id DESC LIMIT 1;
     `, [req.user.id]);
 
     return res.json({

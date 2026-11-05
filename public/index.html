@@ -3,46 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AETHERIA · Persistent AI-Powered Virtual Civilization Simulator</title>
+  <title>Aethel · Persistent Virtual Civilization & Life Simulator</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-  <!-- Dynamic HUD Navbar Mount -->
+  <!-- Dynamic Navbar Mount -->
   <div id="cyber-navbar-mount"></div>
 
   <!-- Hero Section -->
-  <section class="py-5 text-center position-relative overflow-hidden">
+  <section class="py-5 text-center position-relative">
     <div class="container py-lg-5">
       <div class="row justify-content-center">
         <div class="col-lg-10">
-          <div class="d-inline-flex align-items-center cyber-card px-3 py-1 mb-4">
-            <span class="pulse-beacon me-2"></span>
-            <span class="tech-font text-info text-uppercase fw-bold" style="letter-spacing: 1.5px;">Persistent Universe · Veridia Prime Online</span>
+          <div class="badge bg-primary-subtle text-primary border px-3 py-2 rounded-pill mb-3">
+            <i class="bi bi-globe-americas me-1"></i> Planet Aethel · Single-Player Simulation
           </div>
 
-          <h1 class="display-3 fw-bold text-white mb-3 text-uppercase brand-font" style="letter-spacing: 2px;">
-            Aetheria <span class="text-info">Civilization</span>
+          <h1 class="display-4 fw-bold text-body mb-3">
+            Planet <span class="text-primary">Aethel</span>
           </h1>
 
-          <p class="fs-4 text-info tech-font mb-4 fw-semibold" style="letter-spacing: 2px;">
+          <p class="fs-5 text-secondary mb-4 fw-semibold fst-italic">
             "Your real life is outside. Your second life is inside."
           </p>
 
-          <p class="lead text-muted mb-5 mx-auto" style="max-width: 780px; font-size: 1.15rem; line-height: 1.7;">
-            Step into a persistent, AI-powered digital universe where players collectively shape the destiny of civilizations.
-            Build relationships, study in quantum academies, launch galactic corporations, participate in democratic parliaments, 
-            and interact with persistent AI non-player citizens across real-time worlds.
+          <p class="lead text-secondary mb-5 mx-auto" style="max-width: 760px; font-size: 1.15rem; line-height: 1.7;">
+            Step into a text-based persistent virtual world that mirrors real life. 
+            Begin your journey as a human at <strong>Age 1</strong>, grow through early childhood, attend schools and academies, build professional careers, manage business accounts, bond with AI pet companions, and explore five distinct sovereign nations and constitutions.
           </p>
 
           <div class="d-flex flex-wrap justify-content-center gap-3">
-            <a href="/login.html" class="btn btn-cyber-primary btn-lg px-5 py-3 fs-5">
-              <i class="bi bi-rocket-takeoff-fill me-2"></i> Enter Civilization
+            <a href="/dashboard.html" class="btn btn-primary btn-lg px-4 py-3 fw-semibold">
+              <i class="bi bi-play-circle-fill me-2"></i> Enter Simulation (Age 1)
             </a>
-            <a href="/explorer.html" class="btn btn-cyber-secondary btn-lg px-4 py-3 fs-5">
-              <i class="bi bi-globe-americas me-2"></i> Explore Veridia Prime
+            <a href="/map.html" class="btn btn-outline-secondary btn-lg px-4 py-3 fw-semibold">
+              <i class="bi bi-map me-2"></i> Explore World Map
+            </a>
+            <a href="/government.html" class="btn btn-outline-primary btn-lg px-4 py-3 fw-semibold">
+              <i class="bi bi-bank me-2"></i> Nations & Constitutions
             </a>
           </div>
         </div>
@@ -50,101 +51,79 @@
     </div>
   </section>
 
-  <!-- Live Universe Telemetry Banner -->
-  <section class="py-3 border-top border-bottom border-secondary" style="background: rgba(10, 16, 32, 0.7);">
+  <!-- Live Telemetry Banner -->
+  <section class="py-3 border-top border-bottom bg-body-tertiary">
     <div class="container">
       <div class="row text-center g-3">
         <div class="col-6 col-md-3">
-          <div class="text-muted tech-font text-uppercase small">Galaxy Sector</div>
-          <div class="fs-5 text-white fw-bold tech-font">Andromeda-Sigma</div>
+          <div class="text-secondary small text-uppercase">Primary World</div>
+          <div class="fs-5 text-body fw-bold">Planet Aethel</div>
         </div>
         <div class="col-6 col-md-3">
-          <div class="text-muted tech-font text-uppercase small">Primary World</div>
-          <div class="fs-5 text-info fw-bold tech-font">Veridia Prime</div>
+          <div class="text-secondary small text-uppercase">Sovereign Nations</div>
+          <div class="fs-5 text-primary fw-bold">5 Civilizations</div>
         </div>
         <div class="col-6 col-md-3">
-          <div class="text-muted tech-font text-uppercase small">Civilization Era</div>
-          <div class="fs-5 text-success fw-bold tech-font">Golden Age (2185)</div>
+          <div class="text-secondary small text-uppercase">Calendar Status</div>
+          <div class="fs-5 text-success fw-bold">Year 2026 · Cycle 1</div>
         </div>
         <div class="col-6 col-md-3">
-          <div class="text-muted tech-font text-uppercase small">Currency Ledger</div>
-          <div class="fs-5 text-warning fw-bold tech-font">Credits (₡) Active</div>
+          <div class="text-secondary small text-uppercase">Ledger Currency</div>
+          <div class="fs-5 text-body fw-bold">Credits (₡) Active</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Core Pillars Grid -->
+  <!-- Four Core Simulation Pillars -->
   <section class="py-5">
     <div class="container py-4">
       <div class="text-center mb-5">
-        <h2 class="brand-font text-white text-uppercase">The Architecture of a Living Universe</h2>
-        <p class="text-muted">Every decision, trade, election, and breakthrough is recorded in the permanent timeline.</p>
+        <h2 class="fw-bold mb-2 text-body">How Life on Aethel Works</h2>
+        <p class="text-secondary">A persistent text-based civilization combining life simulation, economics, and politics.</p>
       </div>
 
       <div class="row g-4">
-        <!-- 1. Life Simulator -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card p-4 h-100">
-            <div class="text-info fs-1 mb-3"><i class="bi bi-person-bounding-box"></i></div>
-            <h4 class="text-white brand-font fs-5">Life Simulation</h4>
-            <p class="text-muted small">
-              Experience life stages from youth to elderhood. Advance skills, cultivate health, pursue happiness, and build family lineages across consenting households.
+        <!-- Pillar 1: Life & Growth -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-4 border shadow-sm">
+            <div class="fs-2 text-primary mb-3"><i class="bi bi-person-walking"></i></div>
+            <h5 class="fw-bold mb-2 text-body">Natural Aging & Life</h5>
+            <p class="text-secondary small mb-0">
+              Start at Age 1. Growth is rapid from Age 1 to 5, transitioning smoothly into elementary school, teenage years, university, and adult careers.
             </p>
           </div>
         </div>
 
-        <!-- 2. AI NPCs -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card cyber-card-purple p-4 h-100">
-            <div class="text-purple fs-1 mb-3" style="color: var(--neon-purple);"><i class="bi bi-cpu-fill"></i></div>
-            <h4 class="text-white brand-font fs-5">Persistent AI Citizens</h4>
-            <p class="text-muted small">
-              Meet academic deans, senate leaders, traders, and journalists powered by modular LLMs. They maintain memory of your interactions, follow daily routines, and react dynamically.
+        <!-- Pillar 2: Nations & Constitutions -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-4 border shadow-sm">
+            <div class="fs-2 text-warning mb-3"><i class="bi bi-bank"></i></div>
+            <h5 class="fw-bold mb-2 text-body">5 Sovereign Nations</h5>
+            <p class="text-secondary small mb-0">
+              Live in Eldoria (Monarchy), Solaria (Democracy), Cyrene (Technocracy), Valona (Social Democracy), or Zephyria (Sultanate) with unique constitutions.
             </p>
           </div>
         </div>
 
-        <!-- 3. Virtual Economy -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card p-4 h-100">
-            <div class="text-success fs-1 mb-3"><i class="bi bi-cash-coin"></i></div>
-            <h4 class="text-white brand-font fs-5">Server-Authoritative Economy</h4>
-            <p class="text-muted small">
-              A double-entry ledger currency system. Open commercial enterprises, hire fellow citizens, trade in the global marketplace, and bank your earnings securely.
+        <!-- Pillar 3: Economy & Banking -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-4 border shadow-sm">
+            <div class="fs-2 text-success mb-3"><i class="bi bi-coin"></i></div>
+            <h5 class="fw-bold mb-2 text-body">Virtual Economy</h5>
+            <p class="text-secondary small mb-0">
+              Work career shifts, collect salaries, manage personal savings, start businesses, trade items, and participate in national tax policies.
             </p>
           </div>
         </div>
 
-        <!-- 4. Politics & Government -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card p-4 h-100">
-            <div class="text-warning fs-1 mb-3"><i class="bi bi-bank2"></i></div>
-            <h4 class="text-white brand-font fs-5">Democratic Governance</h4>
-            <p class="text-muted small">
-              Sovereign countries operate with real citizen elections, political parties, public treasuries, and enforceable laws enacted through constitutional cyber-parliaments.
-            </p>
-          </div>
-        </div>
-
-        <!-- 5. Real-Time Comms -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card p-4 h-100">
-            <div class="text-info fs-1 mb-3"><i class="bi bi-chat-square-text-fill"></i></div>
-            <h4 class="text-white brand-font fs-5">Multiplayer Social Net</h4>
-            <p class="text-muted small">
-              Instantaneous global channels, city comms, private lounges, and planetary social feeds powered by Socket.IO for rich real-time citizen collaboration.
-            </p>
-          </div>
-        </div>
-
-        <!-- 6. Grounded News & History -->
-        <div class="col-md-6 col-lg-4">
-          <div class="cyber-card p-4 h-100">
-            <div class="text-danger fs-1 mb-3"><i class="bi bi-newspaper"></i></div>
-            <h4 class="text-white brand-font fs-5">Autonomous Gazette</h4>
-            <p class="text-muted small">
-              The Veridian Chronicle generates authentic journalistic editions grounded exclusively in verified database events, preserving planetary history forever.
+        <!-- Pillar 4: AI Citizens & Pets -->
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 p-4 border shadow-sm">
+            <div class="fs-2 text-danger mb-3"><i class="bi bi-heart-pulse"></i></div>
+            <h5 class="fw-bold mb-2 text-body">AI Citizens & Pets</h5>
+            <p class="text-secondary small mb-0">
+              Adopt and care for an AI pet companion (Dog, Cat, Owl, Rabbit), talk with local AI inhabitants, and read the daily newspaper chronicle.
             </p>
           </div>
         </div>
@@ -152,34 +131,101 @@
     </div>
   </section>
 
-  <!-- Call to Action -->
-  <section class="py-5 text-center border-top border-secondary">
-    <div class="container py-4">
-      <h2 class="brand-font text-white mb-3 text-uppercase">Your Virtual Horizon Awaits</h2>
-      <p class="text-muted mb-4">Join thousands of citizens already charting the course of Veridia Prime.</p>
-      <a href="/login.html" class="btn btn-cyber-primary btn-lg px-5 py-3">
-        <i class="bi bi-box-arrow-in-right me-2"></i> Join the Simulation
-      </a>
+  <!-- Five Sovereign Nations Showcase -->
+  <section class="py-5 bg-body-tertiary border-top border-bottom">
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h3 class="fw-bold text-body mb-1">Sovereign Civilizations of Aethel</h3>
+          <p class="text-secondary small mb-0">Every nation offers distinct governance, legal rights, and economic frameworks.</p>
+        </div>
+        <a href="/map.html" class="btn btn-outline-primary btn-sm">Interactive Map <i class="bi bi-arrow-right"></i></a>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card p-3 border shadow-sm h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="fs-3">👑</span>
+              <div>
+                <h6 class="fw-bold mb-0 text-body">Kingdom of Eldoria</h6>
+                <small class="badge bg-primary-subtle text-primary border">Constitutional Monarchy</small>
+              </div>
+            </div>
+            <p class="text-secondary small mb-0">Revered royal tradition guided by King Alden IV and protected by the Royal Magna Carta.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card p-3 border shadow-sm h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="fs-3">🏛️</span>
+              <div>
+                <h6 class="fw-bold mb-0 text-body">Republic of Solaria</h6>
+                <small class="badge bg-info-subtle text-info border">Federal Democracy</small>
+              </div>
+            </div>
+            <p class="text-secondary small mb-0">Citizen-driven representative democracy led by President Lyra Thorne under the Democratic Charter.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card p-3 border shadow-sm h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="fs-3">🔬</span>
+              <div>
+                <h6 class="fw-bold mb-0 text-body">Technocracy of Cyrene</h6>
+                <small class="badge bg-purple-subtle text-purple border" style="color: #7c3aed;">Meritocratic Technocracy</small>
+              </div>
+            </div>
+            <p class="text-secondary small mb-0">Scientific administration and rational governance under High Chancellor Dr. Viktor Vance.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <div class="card p-3 border shadow-sm h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="fs-3">⚖️</span>
+              <div>
+                <h6 class="fw-bold mb-0 text-body">Commonwealth of Valona</h6>
+                <small class="badge bg-success-subtle text-success border">Social Democracy</small>
+              </div>
+            </div>
+            <p class="text-secondary small mb-0">High-welfare egalitarian state led by Prime Minister Sarah Jenkins under the Valonian Social Compact.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 mt-3">
+          <div class="card p-3 border shadow-sm h-100">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="fs-3">🕌</span>
+              <div>
+                <h6 class="fw-bold mb-0 text-body">Grand Sultanate of Zephyria</h6>
+                <small class="badge bg-warning-subtle text-warning border">Hereditary Sultanate</small>
+              </div>
+            </div>
+            <p class="text-secondary small mb-0">Mercantile desert trade empire ruled by Sultan Tariq Al-Mansur and the Sovereign Guild Compact.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <footer class="py-4 text-center border-top border-secondary text-muted small tech-font">
+  <!-- Footer -->
+  <footer class="py-4 text-center text-secondary small border-top">
     <div class="container">
-      <div>AETHERIA PERSISTENT CIVILIZATION PLATFORM · VERSION 2.5</div>
-      <div>Engineered with Node.js, Express, Socket.IO, PostgreSQL & Google Gemini AI</div>
+      <p class="mb-1">Planet Aethel Virtual Civilization Simulator · Built with Node.js, Express & Bootstrap 5</p>
+      <p class="mb-0 text-muted">Offline-Ready & Deployable on Vercel</p>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
   <script src="/js/api.js"></script>
-  <script src="/js/socket-client.js"></script>
   <script src="/js/navbar.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      renderCyberNavbar('landing');
+      renderCyberNavbar('home');
     });
   </script>
 </body>
 </html>
-

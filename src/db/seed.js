@@ -1,7 +1,7 @@
 import { initDb, query, closeDb } from './db.js';
 
 export async function seedDatabase() {
-  console.log('[SEED] Starting universe seed...');
+  console.log('[SEED] Starting universe seed for Planet Aethel...');
   await initDb();
 
   // 1. Galaxy
@@ -10,90 +10,196 @@ export async function seedDatabase() {
     VALUES ($1, $2, $3)
     ON CONFLICT (name) DO UPDATE SET description = EXCLUDED.description
     RETURNING id;
-  `, ['Andromeda-Sigma Sector', 'A bustling star cluster housing emerging post-solar civilizations.', '042, 118, 903']);
+  `, ['Solaris-Prime Galaxy', 'The cradle of post-solar human civilization and habitable planetary systems.', '001, 108, 442']);
   const galaxyId = galaxyRes.rows[0].id;
 
-  // 2. First Planet: Veridia Prime
+  // 2. Primary Planet: Aethel
   const planetRes = await query(`
     INSERT INTO planets (galaxy_id, name, slug, description, currency_name, currency_symbol, population, is_discovered, day_cycle, world_year, world_day, timeline_status)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-    ON CONFLICT (slug) DO UPDATE SET population = EXCLUDED.population
+    ON CONFLICT (slug) DO UPDATE SET 
+      name = EXCLUDED.name,
+      description = EXCLUDED.description,
+      population = EXCLUDED.population
     RETURNING id;
   `, [
     galaxyId,
-    'Veridia Prime',
-    'veridia-prime',
-    'A lush, neon-illuminated terrestrial world with twin binary suns. The vanguard of humanity’s 22nd-century second civilization.',
+    'Aethel',
+    'aethel',
+    'A vast, beautiful terrestrial world of lush continents, vibrant ocean trade, distinct human nations, and historic civilizations.',
     'Credits',
     '₡',
-    42850,
+    124800,
     true,
     24,
-    2185,
-    142,
-    'Golden Age of Expansion'
+    2026,
+    1,
+    'Era of Peace & Global Commerce'
   ]);
   const planetId = planetRes.rows[0].id;
 
-  // 3. First Country: Neo-Arcadia
-  const countryRes = await query(`
-    INSERT INTO countries (planet_id, name, code, description, capital_city, tax_rate, treasury_balance, government_type)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    ON CONFLICT (planet_id, name) DO UPDATE SET tax_rate = EXCLUDED.tax_rate
-    RETURNING id;
-  `, [
-    planetId,
-    'Neo-Arcadia',
-    'ARC',
-    'A flourishing sovereign technocracy known for high-altitude bio-domes and direct participatory democracy.',
-    'Aethel City',
-    7.50,
-    1500000.00,
-    'Representative Cyber-Parliament'
-  ]);
-  const countryId = countryRes.rows[0].id;
+  // 3. Five Distinct Countries on Planet Aethel (Monarchy, Democracy, Technocracy, Social Republic, Sultanate)
+  const countriesData = [
+    {
+      name: 'The Kingdom of Eldoria',
+      code: 'ELD',
+      description: 'A historic realm blending aristocratic tradition, stone castles, and modern infrastructure. Deeply reveres knightly virtue, heritage, and the Crown.',
+      capital_city: "Crown's Landing",
+      tax_rate: 8.00,
+      treasury_balance: 3200000.00,
+      government_type: 'Constitutional Monarchy',
+      leader_title: 'His Majesty King',
+      leader_name: 'King Alden IV',
+      constitution_title: 'The Royal Charter & Magna Carta of Eldoria',
+      constitution_text: 'PREAMBLE: We, the Crown and Free Estates of Eldoria, decree the sovereign dignity of all folk under the Royal Seal.\n\nARTICLE I: The Crown reigns as constitutional protector; the High Council and Parliament enact statute law.\nARTICLE II: Freedom of the press, assembly, and fair trial before the Crown Court are guaranteed to all subjects.\nARTICLE III: Knightly and civic orders reward outstanding national service; income tax is fixed at 8.0% for civil defense and royal public works.',
+      flag_emoji: '👑',
+      map_x: 230,
+      map_y: 170
+    },
+    {
+      name: 'The Republic of Solaria',
+      code: 'SOL',
+      description: 'A bustling, open federal democracy centered on individual liberties, vibrant digital enterprise, and competitive free markets.',
+      capital_city: 'Sol-Centrum',
+      tax_rate: 10.00,
+      treasury_balance: 4800000.00,
+      government_type: 'Federal Representative Democracy',
+      leader_title: 'President',
+      leader_name: 'Lyra Thorne',
+      constitution_title: 'The Constitution of the Republic of Solaria',
+      constitution_text: 'PREAMBLE: We the People of Solaria, to establish liberty, foster innovation, and secure equal justice under law...\n\nARTICLE I: Legislative authority is vested in a bicameral Congress and Senate, elected every four years.\nARTICLE II: Every citizen holds the inviolable right to free speech, peaceful assembly, universal voting, and privacy.\nARTICLE III: Commerce is governed by fair competition laws, with a standard 10.0% tax rate funding civic infrastructure.',
+      flag_emoji: '🏛️',
+      map_x: 480,
+      map_y: 240
+    },
+    {
+      name: 'The Meritocratic Technocracy of Cyrene',
+      code: 'CYR',
+      description: 'A high-technology coastal nation governed by scientists, educators, and engineers where policy is determined through empirical research.',
+      capital_city: 'Nexus Prime',
+      tax_rate: 12.00,
+      treasury_balance: 5100000.00,
+      government_type: 'Meritocratic Technocracy',
+      leader_title: 'High Chancellor',
+      leader_name: 'Dr. Viktor Vance',
+      constitution_title: 'The Articles of Rational Governance',
+      constitution_text: 'PREAMBLE: Knowledge, empirical research, and demonstrated capability shall steer public policy.\n\nARTICLE I: Executive ministers must hold verified credentials in their relevant scientific or administrative disciplines.\nARTICLE II: Universal education is fully state-funded from early childhood to postdoctoral levels.\nARTICLE III: Tax revenues (12.0%) are dedicated primarily to automation, clean energy, universal healthcare, and public research.',
+      flag_emoji: '🔬',
+      map_x: 720,
+      map_y: 150
+    },
+    {
+      name: 'The Commonwealth of Valona',
+      code: 'VAL',
+      description: 'A peaceful, forest-fringed social democracy committed to universal welfare, environmental stewardship, and citizen happiness.',
+      capital_city: 'Aurora Glen',
+      tax_rate: 14.50,
+      treasury_balance: 2900000.00,
+      government_type: 'Parliamentary Social Democracy',
+      leader_title: 'Prime Minister',
+      leader_name: 'Sarah Jenkins',
+      constitution_title: 'The Valonian Social Compact',
+      constitution_text: 'PREAMBLE: A commonwealth that protects its vulnerable and cherishes the natural world shall prosper endlessly.\n\nARTICLE I: Parliament serves as custodian of public welfare, with decisions guided by universal citizen well-being.\nARTICLE II: Every resident has a fundamental right to dignified housing, medical care, and lifelong education.\nARTICLE III: Progressive tax of 14.5% maintains lush national parks, state hospitals, and clean transport.',
+      flag_emoji: '🌿',
+      map_x: 320,
+      map_y: 390
+    },
+    {
+      name: 'The Grand Sultanate of Zephyria',
+      code: 'ZEP',
+      description: 'A wealthy desert and coastal merchant realm famed for spice routes, grand bazaars, architectural wonders, and sovereign merchant guilds.',
+      capital_city: 'Al-Miraj',
+      tax_rate: 5.00,
+      treasury_balance: 6200000.00,
+      government_type: 'Hereditary Sultanate & Mercantile Guilds',
+      leader_title: 'His Eminence Sultan',
+      leader_name: 'Tariq Al-Mansur',
+      constitution_title: 'The Zephyrian Sovereign Decree & Guild Compact',
+      constitution_text: 'PREAMBLE: By ancient honor, desert hospitality, and the sovereign word of the Sultanate.\n\nARTICLE I: The Sultan guides defense, high justice, and foreign relations; the Grand Guild of Merchants governs commerce and trade.\nARTICLE II: Absolute sanctity of private property, sacred contracts, and zero tariffs on raw food staples.\nARTICLE III: A flat 5.0% civic duty is levied on commercial profits, leaving merchant enterprise free to flourish.',
+      flag_emoji: '🌙',
+      map_x: 600,
+      map_y: 390
+    }
+  ];
 
-  // 4. Region & Cities
-  const regionRes = await query(`
-    INSERT INTO regions (country_id, name, climate)
-    VALUES ($1, $2, $3)
-    RETURNING id;
-  `, [countryId, 'Solaris Basin', 'Temperate Neo-Urban']);
-  const regionId = regionRes.rows[0].id;
+  const countryIds = {};
+  for (const c of countriesData) {
+    const res = await query(`
+      INSERT INTO countries (
+        planet_id, name, code, description, capital_city, tax_rate, 
+        treasury_balance, government_type, leader_title, leader_name, 
+        constitution_title, constitution_text, flag_emoji, map_x, map_y
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+      ON CONFLICT (planet_id, name) DO UPDATE SET 
+        code = EXCLUDED.code,
+        description = EXCLUDED.description,
+        tax_rate = EXCLUDED.tax_rate,
+        government_type = EXCLUDED.government_type,
+        leader_title = EXCLUDED.leader_title,
+        leader_name = EXCLUDED.leader_name,
+        constitution_title = EXCLUDED.constitution_title,
+        constitution_text = EXCLUDED.constitution_text,
+        flag_emoji = EXCLUDED.flag_emoji,
+        map_x = EXCLUDED.map_x,
+        map_y = EXCLUDED.map_y
+      RETURNING id;
+    `, [
+      planetId, c.name, c.code, c.description, c.capital_city, c.tax_rate,
+      c.treasury_balance, c.government_type, c.leader_title, c.leader_name,
+      c.constitution_title, c.constitution_text, c.flag_emoji, c.map_x, c.map_y
+    ]);
+    countryIds[c.name] = res.rows[0].id;
+  }
 
-  const city1Res = await query(`
-    INSERT INTO cities (region_id, country_id, name, description, population)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING id;
-  `, [regionId, countryId, 'Aethel City', 'The planetary capital, famed for its towering crystal spires and thriving commerce.', 31200]);
-  const city1Id = city1Res.rows[0].id;
+  // 4. Regions and Cities for Each Nation
+  const citiesData = [
+    // Eldoria
+    { country: 'The Kingdom of Eldoria', region: 'Crownlands', city: "Crown's Landing", desc: "The ancient capital of kings, with grand stone bridges and royal courts.", pop: 35000 },
+    { country: 'The Kingdom of Eldoria', region: 'Crownlands', city: 'Oakhaven', desc: 'A peaceful timber and agricultural city surrounding the Great Forest.', pop: 12000 },
+    // Solaria
+    { country: 'The Republic of Solaria', region: 'Federal Valley', city: 'Sol-Centrum', desc: 'A gleaming metropolitan capital of commerce, law, and congress.', pop: 48000 },
+    { country: 'The Republic of Solaria', region: 'Federal Valley', city: 'Verdant Bay', desc: 'A coastal resort and shipping harbor bustling with trading vessels.', pop: 18000 },
+    // Cyrene
+    { country: 'The Meritocratic Technocracy of Cyrene', region: 'Research Peninsula', city: 'Nexus Prime', desc: 'The high-tech city of laboratories, universities, and data academies.', pop: 29000 },
+    { country: 'The Meritocratic Technocracy of Cyrene', region: 'Research Peninsula', city: 'Quantum Valley', desc: 'A suburban enclave dedicated to clean microchip fabrication and bio-tech.', pop: 14000 },
+    // Valona
+    { country: 'The Commonwealth of Valona', region: 'Highland Woods', city: 'Aurora Glen', desc: 'A garden city with solar transit, public plazas, and community houses.', pop: 22000 },
+    { country: 'The Commonwealth of Valona', region: 'Highland Woods', city: 'Lakeshire', desc: 'A lakeside city known for craftsmanship, sustainable farming, and art.', pop: 11000 },
+    // Zephyria
+    { country: 'The Grand Sultanate of Zephyria', region: 'Amber Coast', city: 'Al-Miraj', desc: 'The golden capital of vaulted palaces, spice markets, and guild houses.', pop: 38000 },
+    { country: 'The Grand Sultanate of Zephyria', region: 'Amber Coast', city: 'Duneport', desc: 'A deepwater harbor exporting rare silks, dates, gems, and glassware.', pop: 16000 }
+  ];
 
-  const city2Res = await query(`
-    INSERT INTO cities (region_id, country_id, name, description, population)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING id;
-  `, [regionId, countryId, 'Nova Haven', 'A coastal orbital telemetry port and university enclave.', 11650]);
-  const city2Id = city2Res.rows[0].id;
+  const cityIds = {};
+  for (const item of citiesData) {
+    const cId = countryIds[item.country];
+    let regRes = await query(`
+      INSERT INTO regions (country_id, name, climate)
+      VALUES ($1, $2, 'Temperate Habitable')
+      RETURNING id;
+    `, [cId, item.region]);
+    const rId = regRes.rows[0].id;
 
-  // Communities
-  await query(`
-    INSERT INTO communities (city_id, name, description)
-    VALUES 
-      ($1, 'Nexus Spire District', 'High-density commercial and residential hub in central Aethel City.'),
-      ($1, 'Cyber Promenade', 'Vibrant district with cafes, open markets, and neon walkways.'),
-      ($2, 'Astro-Dock Commons', 'Coastal spaceport community of navigators and researchers.')
-  `, [city1Id, city2Id]);
+    let cityRes = await query(`
+      INSERT INTO cities (region_id, country_id, name, description, population)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id;
+    `, [rId, cId, item.city, item.desc, item.pop]);
+    cityIds[item.city] = cityRes.rows[0].id;
+  }
 
-  // 5. Skills
+  // 5. Realistic Human Skills
   const skillsList = [
-    ['Quantum Programming', 'Technical', 'Developing quantum neural nets and high-speed algorithms.', 100],
-    ['Cybernetic Engineering', 'Technical', 'Constructing mechanical frames, prosthetics, and sensory rigs.', 100],
-    ['Biomedical Science', 'Scientific', 'Cellular regeneration and human enhancement therapies.', 100],
-    ['Astro-Physics', 'Scientific', 'Orbital mechanics, stellar anomalies, and warp physics.', 100],
-    ['Diplomacy & Governance', 'Leadership', 'Negotiation, parliamentary debate, and public administration.', 100],
-    ['Market Economics', 'Commerce', 'Trading, supply chains, arbitrage, and corporate management.', 100],
-    ['Holonet Journalism', 'Social', 'Broadcasting, investigative reporting, and public relations.', 100],
-    ['Neural Arts & Media', 'Artistic', 'Virtual reality composition, digital aesthetics, and music.', 100]
+    ['Reading & Language', 'Academic', 'Literacy, grammar, storytelling, and comprehension.', 100],
+    ['Mathematics & Logic', 'Academic', 'Arithmetic, algebra, problem solving, and analytical thinking.', 100],
+    ['Computer Programming', 'Technical', 'Writing software, web development, and digital tools.', 100],
+    ['Medical Science', 'Professional', 'First aid, human anatomy, pathology, and clinical care.', 100],
+    ['Engineering & Design', 'Technical', 'Mechanical design, architecture, and structural physics.', 100],
+    ['Business & Commerce', 'Commerce', 'Accounting, negotiations, marketing, and entrepreneurship.', 100],
+    ['Civics & Law', 'Governance', 'Constitutional law, public policy, and democratic ethics.', 100],
+    ['Visual Arts & Music', 'Artistic', 'Drawing, musical composition, and creative expression.', 100],
+    ['Physical Fitness', 'Physical', 'Endurance, athletic agility, and bodily wellness.', 100]
   ];
 
   for (const [name, cat, desc, maxLvl] of skillsList) {
@@ -104,305 +210,62 @@ export async function seedDatabase() {
     `, [name, cat, desc, maxLvl]);
   }
 
-  // 6. Education Institutions
+  // 6. Educational Institutions
+  const primaryCityId = cityIds["Crown's Landing"] || 1;
+  const solariaCityId = cityIds['Sol-Centrum'] || 1;
+  const cyreneCityId = cityIds['Nexus Prime'] || 1;
+
   await query(`
     INSERT INTO education_institutions (city_id, name, type, description, tuition_fee, reputation)
     VALUES 
-      ($1, 'Aethel Imperial Polytechnic', 'Polytechnic University', 'World-class technological academy offering engineering and cybernetics degrees.', 250.00, 94),
-      ($2, 'Nova Haven Academy of Sciences', 'Academy of Sciences', 'Prestigious institution focused on astro-physics and quantum exploration.', 400.00, 96),
-      ($1, 'Arcadia Free Conservatory of Arts', 'Arts Conservatory', 'Public artistic academy dedicated to music, holonet journalism, and digital arts.', 0.00, 85);
-  `, [city1Id, city2Id]);
-
-  // 7. Career Paths / Jobs
-  await query(`
-    INSERT INTO jobs (country_id, title, category, min_skill_level, base_salary, description, icon)
-    VALUES 
-      ($1, 'Junior Cyber-Security Specialist', 'Engineering', 2, 350.00, 'Monitor and safeguard civilian quantum communications.', 'bi-shield-lock-fill'),
-      ($1, 'Lead Systems Architect', 'Engineering', 10, 850.00, 'Design planetary cloud infrastructure and power grid arrays.', 'bi-cpu-fill'),
-      ($1, 'Clinical Bio-Physician', 'Medical', 8, 750.00, 'Provide gene therapy and cyber-trauma treatment.', 'bi-heart-pulse-fill'),
-      ($1, 'Parliamentary Analyst', 'Governance', 5, 580.00, 'Draft civic legislation and analyze planetary election trends.', 'bi-bank2'),
-      ($1, 'Quantum Market Trader', 'Commerce', 6, 920.00, 'Trade commodities and securities across planetary exchanges.', 'bi-graph-up-arrow'),
-      ($1, 'Investigative Holo-Journalist', 'Media', 3, 420.00, 'Investigate planetary stories for The Veridian Chronicle.', 'bi-newspaper'),
-      ($1, 'Orbital Spaceflight Navigator', 'Science', 12, 1100.00, 'Chart planetary shuttles through binary stellar flares.', 'bi-rocket-takeoff-fill')
-  `, [countryId]);
-
-  // 8. Admin & Overseer System User
-  const adminUserRes = await query(`
-    INSERT INTO users (email, display_name, role)
-    VALUES ($1, $2, $3)
-    ON CONFLICT (email) DO UPDATE SET display_name = EXCLUDED.display_name
-    RETURNING id;
-  `, ['admin@aetheria.universe', 'Overseer Valen', 'admin']);
-  const adminUserId = adminUserRes.rows[0].id;
-
-  // Add auth provider for admin
-  await query(`
-    INSERT INTO user_auth_providers (user_id, provider, provider_user_id, profile_data)
-    VALUES ($1, 'local_demo', 'admin_overseer', '{"name": "Overseer Valen", "email": "admin@aetheria.universe"}')
-    ON CONFLICT (provider, provider_user_id) DO NOTHING;
-  `, [adminUserId]);
-
-  // Admin Avatar & Profile
-  const avatarRes = await query(`
-    INSERT INTO avatars (style, hair, skin, eye_color, clothing, accessories, sprite_url)
-    VALUES ('cyber_legend', 'silver_hawk', 'tone_2', 'neon_blue', 'admiral_longcoat', 'golden_hologram_crest', '/img/avatars/admin.png')
-    RETURNING id;
-  `);
-  const adminAvatarId = avatarRes.rows[0].id;
-
-  const profileRes = await query(`
-    INSERT INTO player_profiles (user_id, planet_id, country_id, city_id, character_name, username, avatar_id, gender, virtual_age, life_stage, bio, reputation, experience_points, level, birth_mode)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 'custom')
-    ON CONFLICT (username) DO UPDATE SET reputation = EXCLUDED.reputation
-    RETURNING id;
-  `, [
-    adminUserId,
-    planetId,
-    countryId,
-    city1Id,
-    'Overseer Valen',
-    'overseer_valen',
-    adminAvatarId,
-    'Non-binary',
-    42,
-    'Career/Adult',
-    'Supreme Custodian of Veridia Prime. Guardian of civilization equilibrium.',
-    999,
-    15000,
-    50
-  ]);
-  const adminProfileId = profileRes.rows[0].id;
-
-  // Admin Character Stats & Wallet
-  await query(`
-    INSERT INTO character_stats (profile_id, health, energy, happiness, intellect, charisma, strength)
-    VALUES ($1, 100, 100, 95, 95, 90, 85)
-    ON CONFLICT (profile_id) DO NOTHING;
-  `, [adminProfileId]);
-
-  await query(`
-    INSERT INTO wallets (profile_id, planet_id, balance)
-    VALUES ($1, $2, 250000.00)
-    ON CONFLICT (profile_id, planet_id) DO UPDATE SET balance = EXCLUDED.balance;
-  `, [adminProfileId, planetId]);
-
-  await query(`
-    INSERT INTO bank_accounts (profile_id, planet_id, account_number, balance, savings_rate)
-    VALUES ($1, $2, 'ARC-BNK-00001', 500000.00, 3.5)
+      ($1, 'Crown Primary Grammar School', 'Primary School', 'State-accredited elementary education providing foundation reading, math, and morals.', 0.00, 85),
+      ($2, 'Solaria Central Elementary', 'Primary School', 'Innovative primary school encouraging curiosity, social play, and science.', 0.00, 88),
+      ($1, 'Eldoria Royal High School', 'High School', 'Prestigious secondary school preparing teens for civic service and higher study.', 150.00, 90),
+      ($2, 'Sol-Centrum College Preparatory', 'High School', 'Comprehensive high school with vocational and university tracks.', 200.00, 92),
+      ($3, 'Cyrene Institute of Technology', 'University', 'World-leading university in computer science, robotics, and medical research.', 1200.00, 98),
+      ($2, 'National University of Solaria', 'University', 'Renowned school of business, law, liberal arts, and government.', 1000.00, 95)
     ON CONFLICT DO NOTHING;
-  `, [adminProfileId, planetId]);
+  `, [primaryCityId, solariaCityId, cyreneCityId]);
 
-  // 9. AI NPCs with Persistent Personalities & Daily Schedules
-  const npcs = [
-    {
-      name: 'Dr. Elena Rostova',
-      age: 38,
-      gender: 'Female',
-      occupation: 'Dean of Quantum Sciences',
-      personality: 'Analytical, visionary, deeply empathetic toward young researchers. Fascinated by stellar radio anomalies.',
-      background: 'Born during the First Colonization Flotilla. Pioneer in tachyon array computing at Aethel Polytechnic.',
-      goals: 'Decode persistent harmonic pulses detected in the Oort Cloud of Veridia Prime.',
-      schedule: JSON.stringify({
-        morning: '08:00 - 12:00: Lecturing quantum physics at Imperial Polytechnic',
-        afternoon: '13:00 - 17:00: Laboratory experiments in quantum resonance',
-        evening: '18:30 - 21:00: Relaxing at Nexus Cyber-Lounge and mentoring students'
-      }),
-      avatar: '/img/avatars/npc_elena.png'
-    },
-    {
-      name: 'Marcus Thorne',
-      age: 49,
-      gender: 'Male',
-      occupation: 'President of the Arcadian Senate',
-      personality: 'Diplomatic, charismatic, steadfast champion of civic transparency and fair economic trade.',
-      background: 'Former civil engineer who led construction of Aethel City’s bio-domes before entering politics.',
-      goals: 'Pass the Interplanetary Accord and ensure clean energy access for every citizen.',
-      schedule: JSON.stringify({
-        morning: '09:00 - 12:00: Presiding over Arcadian Parliamentary sessions',
-        afternoon: '13:30 - 16:30: Meeting delegation leaders and reviewing budget proposals',
-        evening: '17:30 - 20:00: Public town hall address in Nexus Central Plaza'
-      }),
-      avatar: '/img/avatars/npc_marcus.png'
-    },
-    {
-      name: 'Aria Solis',
-      age: 26,
-      gender: 'Female',
-      occupation: 'Chief Editor of The Veridian Chronicle',
-      personality: 'Sharp-witted, relentless truth-seeker with an eye for dramatic human stories and planetary milestones.',
-      background: 'Award-winning investigative reporter who established the first autonomous planetary press syndicate.',
-      goals: 'Deliver completely impartial daily news coverage directly from authoritative database records.',
-      schedule: JSON.stringify({
-        morning: '07:30 - 11:00: Reviewing overnight planetary crime, market, and social logs',
-        afternoon: '12:00 - 16:00: Conducting interviews with pioneers and business magnates',
-        evening: '17:00 - 20:00: Publishing the evening edition of The Veridian Chronicle'
-      }),
-      avatar: '/img/avatars/npc_aria.png'
-    },
-    {
-      name: 'Kaelen Voss',
-      age: 34,
-      gender: 'Male',
-      occupation: 'Founder of Apex Cybernetics',
-      personality: 'Pragmatic, ambitious, enthusiastic entrepreneur who loves trading and inventing hardware.',
-      background: 'Apprentice tinkerer who rose to become the premier hardware merchant in Solaris Basin.',
-      goals: 'Supply cutting-edge neural visors and exosuits across the entire galaxy.',
-      schedule: JSON.stringify({
-        morning: '08:30 - 12:00: Overseeing product fabrication at Apex Manufacturing Lab',
-        afternoon: '13:00 - 17:30: Managing the marketplace exchange and customer shipments',
-        evening: '18:00 - 21:30: Networking with new entrepreneurs at the Starlight Observatory'
-      }),
-      avatar: '/img/avatars/npc_kaelen.png'
-    }
-  ];
-
-  for (const npc of npcs) {
-    await query(`
-      INSERT INTO npc_characters (planet_id, country_id, city_id, name, age, gender, occupation, personality, background, goals, schedule_json, avatar_url)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      ON CONFLICT DO NOTHING;
-    `, [
-      planetId,
-      countryId,
-      city1Id,
-      npc.name,
-      npc.age,
-      npc.gender,
-      npc.occupation,
-      npc.personality,
-      npc.background,
-      npc.goals,
-      npc.schedule,
-      npc.avatar
-    ]);
-  }
-
-  // 10. Starter Businesses & Products
-  const bizRes = await query(`
-    INSERT INTO businesses (planet_id, country_id, city_id, owner_profile_id, name, category, description, capital, revenue, reputation)
-    VALUES ($1, $2, $3, $4, 'Apex Cybernetics Emporium', 'Technology', 'Premier supplier of cybernetic implants, neural optics, and titanium frames.', 25000.00, 8420.00, 92)
-    RETURNING id;
-  `, [planetId, countryId, city1Id, adminProfileId]);
-  const bizId = bizRes.rows[0].id;
-
-  const prodRes1 = await query(`
-    INSERT INTO products (business_id, name, category, description, cost_price, selling_price, stock_quantity, quality_rating)
+  // 7. Careers Across Life Stages
+  await query(`
+    INSERT INTO jobs (country_id, title, category, base_salary, description)
     VALUES 
-      ($1, 'Neural Interface Visor Mk.II', 'Hardware', 'Holographic ocular visor offering enhanced augmented telemetry.', 50.00, 120.00, 45, 4.8),
-      ($1, 'Titanium Exosuit Frame', 'Wearable', 'Lightweight combat and heavy construction kinetic framework.', 180.00, 350.00, 20, 4.9),
-      ($1, 'Synthetic Bio-Gel Pack', 'Medical', 'Rapid cellular reconstruction gel for trauma and fatigue.', 8.00, 25.00, 150, 4.6),
-      ($1, 'Veridian Chrono-Compass', 'Exploration', 'Quantum navigational beacon synced with planetary binary stars.', 35.00, 85.00, 60, 4.7)
-    RETURNING id;
-  `, [bizId]);
+      -- Teenage & Entry Level Jobs
+      ($1, 'Library Assistant', 'Education', 45.00, 'Assisting visitors and archiving scrolls and books.'),
+      ($1, 'Apprentice Baker', 'Culinary', 50.00, 'Baking fresh breads and pastries for the community.'),
+      ($1, 'Local Courier', 'Transportation', 55.00, 'Delivering parcels and messages across districts.'),
+      -- Adult Careers
+      ($1, 'Software Developer', 'Technology', 180.00, 'Building civic registries and computational tools.'),
+      ($1, 'Staff Physician', 'Medical', 260.00, 'Providing clinical healthcare and treatments.'),
+      ($1, 'Civil Servant', 'Governance', 140.00, 'Managing municipal permits, tax records, and public filings.'),
+      ($1, 'Accountant', 'Commerce', 160.00, 'Managing treasury ledgers and auditing commercial statements.'),
+      ($1, 'Primary School Teacher', 'Education', 135.00, 'Teaching foundational literacy and mathematics to young citizens.'),
+      ($1, 'Royal Architectural Craftsman', 'Engineering', 210.00, 'Designing civic buildings and public bridges.')
+    ON CONFLICT DO NOTHING;
+  `, [countryIds['The Kingdom of Eldoria']]);
 
-  // Marketplace listings
-  for (const prodRow of prodRes1.rows) {
-    await query(`
-      INSERT INTO marketplace_listings (seller_profile_id, planet_id, product_id, title, description, price, quantity, status)
-      VALUES ($1, $2, $3, 'Official Emporium Stock', 'Guaranteed manufacturer grade item with warranty.', 120.00, 5, 'active')
-    `, [adminProfileId, planetId, prodRow.id]);
-  }
-
-  // 11. Government, Parties & Laws
+  // 8. AI NPCs (Persistent Human Citizens)
   await query(`
-    INSERT INTO governments (country_id, leader_profile_id, leader_name, form, budget)
-    VALUES ($1, $2, 'Marcus Thorne (Council President)', 'Democratic Technocracy', 3500000.00)
-    ON CONFLICT (country_id) DO NOTHING;
-  `, [countryId, adminProfileId]);
-
-  await query(`
-    INSERT INTO political_parties (country_id, name, abbreviation, ideology, members_count)
+    INSERT INTO npc_characters (planet_id, country_id, city_id, name, age, gender, occupation, personality, background, goals, schedule_json)
     VALUES 
-      ($1, 'Techno-Progressive Coalition', 'TPC', 'Accelerated scientific research, automated civil infrastructure, open space exploration.', 1420),
-      ($1, 'Veridian Sovereign Alliance', 'VSA', 'Planetary self-sufficiency, ecosystem preservation, cautious contact policies.', 980)
-  `, [countryId]);
+      ($1, $2, $3, 'Master Arthur Vance', 48, 'Male', 'Royal Archivist & Teacher', 'Scholarly, encouraging, and deeply respectful of history.', 'Has served 20 years guiding students and preserving the legal scrolls of Eldoria.', 'Educate the youth in reading and history.', '{"morning": "Library archives", "afternoon": "Teaching class", "evening": "Writing chronicle"}'),
+      ($1, $2, $3, 'Dr. Clara Thorne', 34, 'Female', 'Community Doctor', 'Compassionate, focused, and attentive to public health.', 'Grew up in Oakhaven and trained in general medicine to care for neighborhood families.', 'Protect public health and heal citizens.', '{"morning": "Clinic rounds", "afternoon": "Patient consultations", "evening": "Community center"}'),
+      ($1, $2, $3, 'Jonathan Miller', 29, 'Male', 'Town Merchant & Shopkeeper', 'Cheerful, fair-minded, and sharp with arithmetic.', 'Runs the Central Market Trading Post, buying and selling local foodstuffs and goods.', 'Maintain honest trade and support local producers.', '{"morning": "Opening stalls", "afternoon": "Trading goods", "evening": "Balancing ledger"}'),
+      ($1, $2, $3, 'Lady Beatrice Howard', 56, 'Female', 'Crown Magistrate & Legal Scholar', 'Fair, dignified, and steadfast in upholding constitutional rights.', 'Appointed by the Royal Council to oversee civic contracts and property transfers.', 'Ensure constitutional justice is accessible to all.', '{"morning": "Crown Court", "afternoon": "Reviewing petitions", "evening": "Reading law"}')
+    ON CONFLICT DO NOTHING;
+  `, [planetId, countryIds['The Kingdom of Eldoria'], primaryCityId]);
 
-  await query(`
-    INSERT INTO laws (country_id, title, description, category, status)
-    VALUES 
-      ($1, 'Universal Citizen Basic Dividend Act', 'Guarantees every active citizen a baseline allowance upon completing civic registration.', 'Economic', 'enacted'),
-      ($1, 'Fair Interplanetary Commerce Protocol', 'Regulates tariffs, prevents currency manipulation, and enforces consumer safety standards.', 'Economic', 'enacted'),
-      ($1, 'Planetary Atmosphere Protection Accord', 'Prohibits atmospheric strip-mining and restricts orbital heavy propulsion near urban zones.', 'Public Works', 'enacted')
-  `, [countryId]);
-
-  // Active Election
-  await query(`
-    INSERT INTO elections (country_id, title, position, status, end_date)
-    VALUES ($1, 'General Planetary Council Election 2185', 'Council President', 'active', CURRENT_TIMESTAMP + INTERVAL '30 days')
-  `, [countryId]);
-
-  // 12. Lounges & Public Channels
-  await query(`
-    INSERT INTO lounges (planet_id, city_id, name, category, description, is_private, capacity, current_occupants)
-    VALUES 
-      ($1, $2, 'Nexus Central Cyber-Lounge', 'Cyber Lounge', 'The premier neon lounge overlooking Aethel City central plaza. Live holograms and chill beats.', FALSE, 100, 14),
-      ($1, $3, 'The Starlight Observatory Hub', 'Science Hub', 'Cosy discussion lounge for astronomers, navigators, and explorers.', FALSE, 50, 8),
-      ($1, $2, 'Traders Syndicate Exchange Room', 'Traders Guild', 'Exclusive meeting room for company founders and market brokers.', FALSE, 40, 5)
-  `, [planetId, city1Id, city2Id]);
-
-  // Public Chat Conversations
-  const convGlobal = await query(`
-    INSERT INTO conversations (type, title, planet_id)
-    VALUES ('channel', 'Global Holo-Net (Veridia Prime)', $1)
-    RETURNING id;
-  `, [planetId]);
-
-  await query(`
-    INSERT INTO messages (conversation_id, sender_name, content, is_system)
-    VALUES 
-      ($1, 'Veridia Central Net', 'Welcome to Veridia Prime. Quantum Holonet link established. Transmit respectfully.', TRUE),
-      ($1, 'Aria Solis', 'Greetings citizens! Welcome to Aethel City. The Veridian Chronicle evening edition is now on stands.', FALSE)
-  `, [convGlobal.rows[0].id]);
-
-  // 13. Achievements
-  const achievements = [
-    ['FIRST_STEP', 'Awakening on Veridia', 'Complete character creation and arrive in your starting city.', 'General', 'bi-compass-fill', 50],
-    ['FIRST_CREDIT', 'Financial Independence', 'Earn your first 500 Credits through work, business, or commerce.', 'Economy', 'bi-cash-coin', 75],
-    ['SOCIALITE', 'Citizen of the Stars', 'Connect with 3 friends and participate in a public lounge.', 'Social', 'bi-people-fill', 100],
-    ['SCHOLAR', 'Master of Knowledge', 'Enroll in an academy and graduate with honors.', 'Education', 'bi-mortarboard-fill', 150],
-    ['TYCOON', 'Industrial Visionary', 'Register a corporation and list your first commercial product.', 'Business', 'bi-building-fill', 200],
-    ['STATESMAN', 'Architect of Democracy', 'Cast a validated ballot in a presidential or parliamentary election.', 'Government', 'bi-fingerprint', 100],
-    ['EXPLORER', 'Planetary Cartographer', 'Visit both Aethel City and Nova Haven.', 'Exploration', 'bi-globe-americas', 125]
-  ];
-
-  for (const [code, title, desc, cat, icon, pts] of achievements) {
-    await query(`
-      INSERT INTO achievements (code, title, description, category, icon, points)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      ON CONFLICT (code) DO NOTHING;
-    `, [code, title, desc, cat, icon, pts]);
-  }
-
-  // 14. Starter Dynamic Missions
-  await query(`
-    INSERT INTO missions (category, title, description, requirements, xp_reward, currency_reward, rep_reward)
-    VALUES 
-      ('Social', 'Civic Induction & Social Net', 'Introduce yourself to the planetary network by posting your first status update.', '{"type": "post", "count": 1}', 100, 50.00, 15),
-      ('Education', 'Academic Enrollment', 'Visit an academy in Aethel City or Nova Haven and register for an accredited course.', '{"type": "enroll", "count": 1}', 200, 75.00, 20),
-      ('Employment', 'Secure Professional Employment', 'Apply for and obtain an active position in engineering, commerce, or government.', '{"type": "job", "count": 1}', 250, 150.00, 30),
-      ('Government', 'Democratic Participation', 'Review the candidate platforms in the elections portal and submit your vote.', '{"type": "vote", "count": 1}', 150, 60.00, 25),
-      ('Business', 'Enter the Open Market', 'Purchase an item from the marketplace or register your own enterprise.', '{"type": "market", "count": 1}', 300, 200.00, 40)
-  `);
-
-  // 15. World History & Newspaper Grounded in DB Events
+  // 9. Initial Real-Life Newspaper Edition
   await query(`
     INSERT INTO historical_records (planet_id, world_year, world_day, category, headline, article)
     VALUES 
-      ($1, 2185, 1, 'milestone', 'The Dawn of Veridia Prime', 'The first colony ships arrived in Solaris Basin, establishing the foundation of Aethel City.'),
-      ($1, 2185, 45, 'government', 'Constitution of Neo-Arcadia Ratified', 'Delegates from all pioneering districts convened to enact the Charter of Cyber-Democracy.'),
-      ($1, 2185, 100, 'economy', 'Planetary Credit Clearinghouse Launched', 'The Ministry of Finance activated the decentralized wallet ledger, standardizing the planetary Credit (₡).'),
-      ($1, 2185, 142, 'culture', 'The Veridian Chronicle Inaugural Edition', 'Editor Aria Solis announces planetary automated news reporting, directly syncing real citizen achievements to the historic record.')
+      ($1, 2026, 1, 'culture', 'The Aethel Gazette · Global Edition #1', 'CONCORD ACROSS AETHEL: The five nations of planet Aethel celebrate the Annual Solstice Treaty. King Alden IV of Eldoria and President Thorne of Solaria proclaim mutual open borders for merchant shipping and cultural exchange. Elementary schools open enrollment for the new academic cycle.'),
+      ($1, 2026, 1, 'milestone', 'New Academic Cycle Commences Across All Nations', 'Primary schools and high schools across all five countries report record enrollment as young citizens embark on their educational journey.')
+    ON CONFLICT DO NOTHING;
   `, [planetId]);
 
-  // Starter Social Post
-  await query(`
-    INSERT INTO social_posts (profile_id, planet_id, content, hashtags, is_npc, likes_count, comments_count)
-    VALUES 
-      ($1, $2, 'The central quantum grid in Aethel City is running at peak capacity. Welcome all new arrivals to Veridia Prime! #VeridiaAwakens #FutureIsNow', '{"VeridiaAwakens", "FutureIsNow"}', TRUE, 42, 5),
-      ($1, $2, 'Remember to cast your vote in the ongoing Senate election. Every citizen shapes the laws of Neo-Arcadia. #DemocracyInAction', '{"DemocracyInAction"}', TRUE, 29, 3)
-  `, [adminProfileId, planetId]);
-
-  console.log('[SEED] Universe seeding completed successfully!');
+  console.log('[SEED] Planet Aethel universe seed completed successfully!');
 }
 
 // Allow running directly via CLI
@@ -413,9 +276,8 @@ if (process.argv[1] && process.argv[1].endsWith('seed.js')) {
       process.exit(0);
     })
     .catch(async (err) => {
-      console.error('[SEED] Seeding failed:', err);
+      console.error('[SEED] Seed failed:', err);
       await closeDb();
       process.exit(1);
     });
 }
-

@@ -1,9 +1,32 @@
 import express from 'express';
 import { query, transaction } from '../db/db.js';
-import { authenticate, requireCharacter } from '../middleware/auth.js';
+import { authenticate, optionalAuth, requireCharacter } from '../middleware/auth.js';
 import { logAudit } from '../middleware/audit.js';
 
 const router = express.Router();
+
+/**
+ * Get All Nations of Aethel with Government & Constitution Data
+ */
+router.get('/nations', optionalAuth, async (req, res) => {
+  try {
+    const nationsRes = await query(`
+      SELECT c.*,
+             (SELECT name FROM cities ci WHERE ci.country_id = c.id ORDER BY id ASC LIMIT 1) AS capital_city,
+             (SELECT COUNT(*) FROM cities ci WHERE ci.country_id = c.id) AS cities_count,
+             (SELECT COUNT(*) FROM player_profiles p WHERE p.country_id = c.id) AS citizens_count
+      FROM countries c
+      WHERE c.is_active = TRUE
+      ORDER BY c.id ASC;
+    `);
+
+    return res.json({
+      nations: nationsRes.rows
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to fetch nations: ' + err.message });
+  }
+});
 
 /**
  * Get Country Government, Cabinet & Enacted Laws

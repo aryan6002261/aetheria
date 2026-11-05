@@ -70,7 +70,14 @@ CREATE TABLE IF NOT EXISTS countries (
   capital_city VARCHAR(100),
   tax_rate NUMERIC(5,2) DEFAULT 8.50, -- percentage
   treasury_balance NUMERIC(16,2) DEFAULT 500000.00,
-  government_type VARCHAR(50) DEFAULT 'Constitutional Technocracy',
+  government_type VARCHAR(100) DEFAULT 'Constitutional Monarchy',
+  leader_title VARCHAR(50) DEFAULT 'Prime Minister',
+  leader_name VARCHAR(100) DEFAULT 'Leader',
+  constitution_title VARCHAR(150),
+  constitution_text TEXT,
+  flag_emoji VARCHAR(10) DEFAULT '🏛️',
+  map_x INTEGER DEFAULT 200,
+  map_y INTEGER DEFAULT 200,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   UNIQUE(planet_id, name)
@@ -105,12 +112,12 @@ CREATE TABLE IF NOT EXISTS communities (
 -- 3. AVATARS & CHARACTERS
 CREATE TABLE IF NOT EXISTS avatars (
   id SERIAL PRIMARY KEY,
-  style VARCHAR(50) DEFAULT 'cyber_pixel',
-  hair VARCHAR(50) DEFAULT 'neon_blue_bob',
-  skin VARCHAR(50) DEFAULT 'tone_2',
-  eye_color VARCHAR(50) DEFAULT 'cyber_amber',
-  clothing VARCHAR(50) DEFAULT 'titanium_jacket',
-  accessories VARCHAR(50) DEFAULT 'holographic_visors',
+  style VARCHAR(50) DEFAULT 'human_standard',
+  hair VARCHAR(50) DEFAULT 'brown_wavy',
+  skin VARCHAR(50) DEFAULT 'medium',
+  eye_color VARCHAR(50) DEFAULT 'brown',
+  clothing VARCHAR(50) DEFAULT 'civilian_casual',
+  accessories VARCHAR(50) DEFAULT 'none',
   sprite_url TEXT DEFAULT '/img/avatars/default.png',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -125,9 +132,16 @@ CREATE TABLE IF NOT EXISTS player_profiles (
   username VARCHAR(50) UNIQUE NOT NULL,
   avatar_id INTEGER REFERENCES avatars(id) ON DELETE SET NULL,
   gender VARCHAR(30) DEFAULT 'Non-binary',
-  virtual_age INTEGER DEFAULT 19,
-  life_stage VARCHAR(30) DEFAULT 'Early Adulthood', -- 'Childhood', 'Primary Education', 'Teenage Life', 'University/Early Adulthood', 'Career/Adult', 'Senior Life', 'Elder Life'
-  bio TEXT DEFAULT 'Citizen of the Frontier.',
+  virtual_age INTEGER DEFAULT 1, -- Starts at Age 1
+  life_stage VARCHAR(50) DEFAULT 'Childhood', -- 'Childhood', 'Primary Education', 'Teenage Life', 'University / Early Career', 'Career & Adult Life', 'Senior Life'
+  wealth_tier VARCHAR(30) DEFAULT 'working_class', -- 'working_class', 'middle_class', 'affluent'
+  hair_color VARCHAR(30) DEFAULT 'Brown',
+  hair_style VARCHAR(30) DEFAULT 'Short Wavy',
+  eye_color VARCHAR(30) DEFAULT 'Brown',
+  skin_tone VARCHAR(30) DEFAULT 'Medium',
+  height_cm INTEGER DEFAULT 170,
+  build VARCHAR(30) DEFAULT 'Average',
+  bio TEXT DEFAULT 'A human citizen beginning life on Aethel.',
   reputation INTEGER DEFAULT 100,
   experience_points INTEGER DEFAULT 0,
   level INTEGER DEFAULT 1,
@@ -136,6 +150,31 @@ CREATE TABLE IF NOT EXISTS player_profiles (
   last_active_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pets (
+  id SERIAL PRIMARY KEY,
+  profile_id INTEGER NOT NULL REFERENCES player_profiles(id) ON DELETE CASCADE,
+  name VARCHAR(50) NOT NULL,
+  species VARCHAR(50) NOT NULL, -- 'Dog', 'Cat', 'Owl', 'Rabbit', 'Fox'
+  breed VARCHAR(50) DEFAULT 'Companion',
+  mood VARCHAR(30) DEFAULT 'Happy',
+  hunger INTEGER DEFAULT 20,
+  loyalty INTEGER DEFAULT 50,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS life_logs (
+  id SERIAL PRIMARY KEY,
+  profile_id INTEGER NOT NULL REFERENCES player_profiles(id) ON DELETE CASCADE,
+  virtual_age INTEGER NOT NULL,
+  world_year INTEGER NOT NULL,
+  world_day INTEGER NOT NULL,
+  action_type VARCHAR(50) NOT NULL,
+  description TEXT NOT NULL,
+  xp_gained INTEGER DEFAULT 0,
+  credits_changed NUMERIC(12,2) DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS character_stats (

@@ -27,6 +27,7 @@ async function testWebsitePages() {
     '/elections.html',
     '/missions.html',
     '/newspaper.html',
+    '/map.html',
     '/explorer.html',
     '/lounges.html',
     '/profile.html',

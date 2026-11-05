@@ -1,40 +1,40 @@
 /* ==========================================================================
-   AETHERIA: CLEAN MODERN WEB STYLING (BOOTSTRAP 5 LIGHT & DARK THEMES)
-   Clean, simple, professional web application design
+   AETHERIA: CLEAN MODERN WEB STYLING (PURE LIGHT & DARK THEMES)
+   Pure white & black in light mode; Deep slate & white in dark mode
    ========================================================================== */
 
 :root, [data-bs-theme="light"] {
-  --app-bg: #f8fafc;
+  --app-bg: #ffffff;
   --app-card-bg: #ffffff;
-  --app-card-border: #e2e8f0;
-  --app-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
-  --app-card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --app-card-border: #e5e7eb;
+  --app-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  --app-card-hover-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
   --app-navbar-bg: #ffffff;
-  --app-navbar-border: #e2e8f0;
-  --app-text: #0f172a;
-  --app-text-muted: #64748b;
+  --app-navbar-border: #e5e7eb;
+  --app-text: #000000;
+  --app-text-muted: #4b5563;
   --app-accent-primary: #2563eb;
   --app-accent-purple: #7c3aed;
   --app-accent-success: #16a34a;
   --app-accent-warning: #d97706;
   --app-accent-danger: #dc2626;
-  --chat-received-bg: #f1f5f9;
-  --chat-received-text: #0f172a;
+  --chat-received-bg: #f3f4f6;
+  --chat-received-text: #000000;
   --chat-sent-bg: #2563eb;
   --chat-sent-text: #ffffff;
   --chat-npc-bg: #ede9fe;
-  --chat-npc-text: #5b21b6;
+  --chat-npc-text: #4c1d95;
 }
 
 [data-bs-theme="dark"] {
   --app-bg: #0f172a;
   --app-card-bg: #1e293b;
   --app-card-border: #334155;
-  --app-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25);
-  --app-card-hover-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.35);
+  --app-card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --app-card-hover-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
   --app-navbar-bg: #1e293b;
   --app-navbar-border: #334155;
-  --app-text: #f8fafc;
+  --app-text: #ffffff;
   --app-text-muted: #94a3b8;
   --app-accent-primary: #3b82f6;
   --app-accent-purple: #8b5cf6;
@@ -42,11 +42,11 @@
   --app-accent-warning: #f59e0b;
   --app-accent-danger: #ef4444;
   --chat-received-bg: #334155;
-  --chat-received-text: #f8fafc;
+  --chat-received-text: #ffffff;
   --chat-sent-bg: #3b82f6;
   --chat-sent-text: #ffffff;
-  --chat-npc-bg: #2e1065;
-  --chat-npc-text: #e9d5ff;
+  --chat-npc-bg: #312e81;
+  --chat-npc-text: #e0e7ff;
 }
 
 /* Global Reset & Clean Typography */
@@ -55,7 +55,7 @@ body {
   color: var(--app-text) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
   min-height: 100vh;
 }
 
@@ -63,7 +63,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   font-family: inherit;
   font-weight: 600;
   letter-spacing: -0.015em;
-  color: var(--app-text);
+  color: var(--app-text) !important;
 }
 
 .tech-font {
@@ -71,7 +71,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   font-weight: 500;
 }
 
-/* Light Theme: Adapt Legacy Hardcoded text-white Classes */
+/* Light Theme: Adapt Legacy Hardcoded text-white Classes to Pure Dark */
 [data-bs-theme="light"] h1.text-white,
 [data-bs-theme="light"] h2.text-white,
 [data-bs-theme="light"] h3.text-white,
@@ -84,28 +84,28 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 [data-bs-theme="light"] label.text-white,
 [data-bs-theme="light"] a.text-white,
 [data-bs-theme="light"] th.text-white,
-[data-bs-theme="light"] td.text-white {
+[data-bs-theme="light"] td.text-white,
+[data-bs-theme="light"] .display-3,
+[data-bs-theme="light"] .display-6 {
   color: var(--app-text) !important;
 }
 
-[data-bs-theme="light"] .btn .text-white,
+/* Retain white text inside solid colored buttons, badges, and alerts */
+[data-bs-theme="light"] .btn-primary .text-white,
+[data-bs-theme="light"] .btn-success .text-white,
+[data-bs-theme="light"] .btn-danger .text-white,
+[data-bs-theme="light"] .btn-cyber-primary .text-white,
+[data-bs-theme="light"] .btn-cyber-purple .text-white,
 [data-bs-theme="light"] .badge .text-white {
   color: #ffffff !important;
 }
 
-[data-bs-theme="light"] .text-muted,
-[data-bs-theme="light"] small.text-muted,
-[data-bs-theme="light"] p.text-muted {
+/* Clean Muted Text */
+.text-muted, small.text-muted, p.text-muted {
   color: var(--app-text-muted) !important;
 }
 
-[data-bs-theme="dark"] .text-muted,
-[data-bs-theme="dark"] small.text-muted,
-[data-bs-theme="dark"] p.text-muted {
-  color: var(--app-text-muted) !important;
-}
-
-/* Standard Clean Cards */
+/* Cards */
 .cyber-card, .card {
   background-color: var(--app-card-bg) !important;
   border: 1px solid var(--app-card-border) !important;
@@ -136,12 +136,11 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   border-radius: 6px;
   padding: 7px 16px;
   font-size: 0.95rem;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: opacity 0.15s ease;
 }
 
 .btn-cyber-primary:hover, .btn-cyber-primary:focus {
   opacity: 0.9;
-  transform: translateY(-1px);
   color: #ffffff !important;
 }
 
@@ -153,7 +152,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   border-radius: 6px;
   padding: 7px 16px;
   font-size: 0.95rem;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 
 .btn-cyber-secondary:hover {
@@ -169,22 +168,20 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   border-radius: 6px;
   padding: 7px 16px;
   font-size: 0.95rem;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: opacity 0.15s ease;
 }
 
 .btn-cyber-purple:hover {
   opacity: 0.9;
-  transform: translateY(-1px);
   color: #ffffff !important;
 }
 
-/* Modern Soft Badges */
+/* Soft Badges */
 .badge-neon-cyan {
   background-color: rgba(37, 99, 235, 0.12) !important;
   color: var(--app-accent-primary) !important;
   border: 1px solid rgba(37, 99, 235, 0.25) !important;
   font-weight: 500;
-  border-radius: 4px;
 }
 
 .badge-neon-emerald {
@@ -192,7 +189,6 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   color: var(--app-accent-success) !important;
   border: 1px solid rgba(22, 163, 74, 0.25) !important;
   font-weight: 500;
-  border-radius: 4px;
 }
 
 .badge-neon-purple {
@@ -200,7 +196,6 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   color: var(--app-accent-purple) !important;
   border: 1px solid rgba(124, 58, 237, 0.25) !important;
   font-weight: 500;
-  border-radius: 4px;
 }
 
 .badge-neon-amber {
@@ -208,7 +203,6 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   color: var(--app-accent-warning) !important;
   border: 1px solid rgba(217, 119, 6, 0.25) !important;
   font-weight: 500;
-  border-radius: 4px;
 }
 
 .badge-neon-rose {
@@ -216,7 +210,6 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   color: var(--app-accent-danger) !important;
   border: 1px solid rgba(220, 38, 38, 0.25) !important;
   font-weight: 500;
-  border-radius: 4px;
 }
 
 /* Navigation Bar */
@@ -225,7 +218,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   border-bottom: 1px solid var(--app-navbar-border) !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
   padding: 10px 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .nav-link-cyber {
@@ -242,7 +235,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   background-color: rgba(148, 163, 184, 0.12) !important;
 }
 
-/* Subtle Status Dot */
+/* Status Indicator Dot */
 .pulse-beacon {
   display: inline-block;
   width: 8px;
@@ -304,25 +297,17 @@ select.form-select-cyber option, select option {
 }
 
 /* Modals & Offcanvas */
-.modal-content.cyber-card, .modal-content {
+.modal-content.cyber-card, .modal-content, .offcanvas {
   background-color: var(--app-card-bg) !important;
   border: 1px solid var(--app-card-border) !important;
   color: var(--app-text) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.offcanvas {
-  background-color: var(--app-card-bg) !important;
-  color: var(--app-text) !important;
-  border-color: var(--app-card-border) !important;
 }
 
 [data-bs-theme="light"] .btn-close-white {
   filter: none !important;
 }
 
-/* Clean Chat Interface */
+/* Chat Interface */
 .chat-window {
   background-color: var(--app-card-bg) !important;
   border: 1px solid var(--app-card-border) !important;
@@ -392,10 +377,45 @@ select.form-select-cyber option, select option {
   color: var(--app-text) !important;
 }
 
-/* Helper Overrides */
-.bg-dark {
-  background-color: var(--app-card-bg) !important;
-  color: var(--app-text) !important;
+/* Pure Light & Dark Theme Overrides for legacy inline backgrounds */
+[data-bs-theme="light"] .bg-dark,
+[data-bs-theme="light"] .bg-body-tertiary {
+  background-color: #f3f4f6 !important;
+  color: #000000 !important;
+  border-color: #e5e7eb !important;
+}
+
+[data-bs-theme="dark"] .bg-dark,
+[data-bs-theme="dark"] .bg-body-tertiary {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+
+[data-bs-theme="light"] [style*="background: #0b1329"],
+[data-bs-theme="light"] [style*="background:#0b1329"],
+[data-bs-theme="light"] [style*="background: rgba(15, 23, 42"],
+[data-bs-theme="light"] [style*="background: rgba(15,23,42"],
+[data-bs-theme="light"] [style*="background: rgba(6, 10, 20"],
+[data-bs-theme="light"] [style*="background: rgba(6,10,20"],
+[data-bs-theme="light"] [style*="background: rgba(10, 16, 32"],
+[data-bs-theme="light"] [style*="background: rgba(10,16,32"] {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #e5e7eb !important;
+}
+
+[data-bs-theme="dark"] [style*="background: #0b1329"],
+[data-bs-theme="dark"] [style*="background:#0b1329"],
+[data-bs-theme="dark"] [style*="background: rgba(15, 23, 42"],
+[data-bs-theme="dark"] [style*="background: rgba(15,23,42"],
+[data-bs-theme="dark"] [style*="background: rgba(6, 10, 20"],
+[data-bs-theme="dark"] [style*="background: rgba(6,10,20"],
+[data-bs-theme="dark"] [style*="background: rgba(10, 16, 32"],
+[data-bs-theme="dark"] [style*="background: rgba(10,16,32"] {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
 }
 
 .border-secondary {

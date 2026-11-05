@@ -37,23 +37,28 @@ router.get('/newspaper', optionalAuth, async (req, res) => {
   try {
     const planetId = req.query.planetId ? parseInt(req.query.planetId, 10) : 1;
 
+    const planetRes = await query('SELECT name, world_year, world_day FROM planets WHERE id = $1;', [planetId]);
+    const planetName = planetRes.rows[0]?.name || 'Aethel';
+
     // Fetch actual recent database events
     const recentRecords = await query(`
       SELECT category, headline, article, world_year, world_day 
       FROM historical_records 
       WHERE planet_id = $1 
-      ORDER BY recorded_at DESC 
-      LIMIT 5;
+      ORDER BY id DESC 
+      LIMIT 8;
     `, [planetId]);
 
     const article = await generateNewspaperArticle({
       events: recentRecords.rows,
-      planetName: 'Veridia Prime'
+      planetName
     });
 
     return res.json({
-      newspaper: 'The Veridian Chronicle',
-      editor: 'Aria Solis',
+      newspaper: `The ${planetName} Gazette`,
+      editor: 'Evelyn Miller',
+      worldYear: planetRes.rows[0]?.world_year || 2026,
+      worldDay: planetRes.rows[0]?.world_day || 1,
       ...article,
       recentEvents: recentRecords.rows
     });

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planet Aethel · World Cartography & Map</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .map-container {
+      position: relative;
+      background: var(--app-bg-surface, #f8fafc);
+      border: 1px solid var(--app-border, #e2e8f0);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    [data-bs-theme="dark"] .map-container {
+      background: #0b1329;
+      border-color: #334155;
+    }
+    .nation-node {
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .nation-node:hover {
+      transform: scale(1.08);
+      filter: drop-shadow(0 0 10px rgba(37, 99, 235, 0.5));
+    }
+    .nation-active {
+      filter: drop-shadow(0 0 14px rgba(22, 163, 74, 0.8));
+    }
+  </style>
+</head>
+<body class="py-3">
+
+  <div id="cyber-navbar-mount"></div>
+
+  <div class="container-fluid px-lg-4 py-3" style="max-width: 1400px;">
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <div class="badge bg-primary-subtle text-primary border px-3 py-1 rounded-pill mb-1">
+          <i class="bi bi-globe-americas me-1"></i> Planet Aethel · World Map
+        </div>
+        <h2 class="fw-bold mb-1 text-body">Planetary Cartography & Nations</h2>
+        <p class="text-secondary small mb-0">Planet Aethel hosts five sovereign civilizations, each governed under distinct political doctrines and historical constitutions.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/government.html" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-bank me-1"></i> View All Constitutions
+        </a>
+        <a href="/newspaper.html" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-newspaper me-1"></i> Planetary Gazette
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Left: Interactive World Map SVG -->
+      <div class="col-lg-8">
+        <div class="map-container p-3 p-md-4 text-center">
+          <div class="d-flex justify-content-between align-items-center mb-2 px-2">
+            <span class="small fw-semibold text-secondary"><i class="bi bi-compass me-1"></i> Aethel Continental Map (Click a Nation)</span>
+            <span class="badge bg-secondary-subtle text-body border" id="map-world-clock">Year 2026 · Day 1</span>
+          </div>
+
+          <svg viewBox="0 0 1000 600" class="w-100" style="max-height: 540px;" xmlns="http://www.w3.org/2000/svg">
+            <!-- Ocean Background Grid -->
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-opacity="0.06" stroke-width="1"/>
+              </pattern>
+              <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.08" />
+                <stop offset="100%" stop-color="#0284c7" stop-opacity="0.15" />
+              </linearGradient>
+            </defs>
+
+            <!-- Ocean Basin -->
+            <rect width="1000" height="600" fill="url(#oceanGrad)" rx="10" />
+            <rect width="1000" height="600" fill="url(#grid)" rx="10" />
+
+            <!-- Continental Landmasses (Stylized Vector Continents) -->
+            <!-- North-West Continent: Eldoria & Solaria -->
+            <path d="M 140 100 Q 220 50, 360 80 T 540 100 T 620 180 T 560 280 T 400 300 T 260 270 T 160 210 Z" 
+                  fill="#10b981" fill-opacity="0.22" stroke="#10b981" stroke-width="2" stroke-linejoin="round" />
+            
+            <!-- South-West Archipelago & Cyrene Technocracy -->
+            <path d="M 130 340 Q 240 310, 320 370 T 300 480 T 180 500 T 100 420 Z" 
+                  fill="#6366f1" fill-opacity="0.22" stroke="#6366f1" stroke-width="2" stroke-linejoin="round" />
+
+            <!-- South-Central Valona Commonwealth -->
+            <path d="M 380 340 Q 480 320, 580 360 T 560 500 T 420 510 T 360 420 Z" 
+                  fill="#f59e0b" fill-opacity="0.22" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round" />
+
+            <!-- Eastern Desert & Zephyria Sultanate -->
+            <path d="M 640 170 Q 780 140, 880 200 T 920 360 T 820 440 T 700 400 T 640 280 Z" 
+                  fill="#ec4899" fill-opacity="0.22" stroke="#ec4899" stroke-width="2" stroke-linejoin="round" />
+
+            <!-- Connecting Sea Routes (Dotted Nautical Lines) -->
+            <path d="M 280 160 Q 400 130, 520 190 T 740 280 T 480 400 T 220 380 T 280 160" 
+                  fill="none" stroke="#2563eb" stroke-opacity="0.35" stroke-dasharray="6,6" stroke-width="2" />
+
+            <!-- NATION MARKERS (INTERACTIVE) -->
+
+            <!-- 1. Kingdom of Eldoria -->
+            <g class="nation-node" id="marker-1" onclick="selectCountry(1)">
+              <circle cx="280" cy="160" r="32" fill="#2563eb" fill-opacity="0.9" stroke="#ffffff" stroke-width="3"/>
+              <text x="280" y="166" font-size="22" text-anchor="middle" dominant-baseline="central">👑</text>
+              <rect x="200" y="202" width="160" height="26" rx="6" fill="#1e293b" fill-opacity="0.85"/>
+              <text x="280" y="219" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Kingdom of Eldoria</text>
+            </g>
+
+            <!-- 2. Republic of Solaria -->
+            <g class="nation-node" id="marker-2" onclick="selectCountry(2)">
+              <circle cx="520" cy="190" r="32" fill="#0284c7" fill-opacity="0.9" stroke="#ffffff" stroke-width="3"/>
+              <text x="520" y="196" font-size="22" text-anchor="middle" dominant-baseline="central">🏛️</text>
+              <rect x="440" y="232" width="160" height="26" rx="6" fill="#1e293b" fill-opacity="0.85"/>
+              <text x="520" y="249" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Republic of Solaria</text>
+            </g>
+
+            <!-- 3. Technocracy of Cyrene -->
+            <g class="nation-node" id="marker-3" onclick="selectCountry(3)">
+              <circle cx="220" cy="380" r="32" fill="#7c3aed" fill-opacity="0.9" stroke="#ffffff" stroke-width="3"/>
+              <text x="220" y="386" font-size="22" text-anchor="middle" dominant-baseline="central">🔬</text>
+              <rect x="135" y="422" width="170" height="26" rx="6" fill="#1e293b" fill-opacity="0.85"/>
+              <text x="220" y="439" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Technocracy of Cyrene</text>
+            </g>
+
+            <!-- 4. Commonwealth of Valona -->
+            <g class="nation-node" id="marker-4" onclick="selectCountry(4)">
+              <circle cx="480" cy="400" r="32" fill="#059669" fill-opacity="0.9" stroke="#ffffff" stroke-width="3"/>
+              <text x="480" y="406" font-size="22" text-anchor="middle" dominant-baseline="central">⚖️</text>
+              <rect x="395" y="442" width="170" height="26" rx="6" fill="#1e293b" fill-opacity="0.85"/>
+              <text x="480" y="459" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Commonwealth of Valona</text>
+            </g>
+
+            <!-- 5. Grand Sultanate of Zephyria -->
+            <g class="nation-node" id="marker-5" onclick="selectCountry(5)">
+              <circle cx="740" cy="280" r="32" fill="#d97706" fill-opacity="0.9" stroke="#ffffff" stroke-width="3"/>
+              <text x="740" y="286" font-size="22" text-anchor="middle" dominant-baseline="central">🕌</text>
+              <rect x="650" y="322" width="180" height="26" rx="6" fill="#1e293b" fill-opacity="0.85"/>
+              <text x="740" y="339" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">Sultanate of Zephyria</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Right: Selected Nation Details & Constitution Drawer -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border p-4 h-100" id="nation-panel">
+          <div class="text-secondary small fw-semibold text-uppercase mb-2">Nation Dossier</div>
+
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <span class="fs-1" id="detail-flag">👑</span>
+            <div>
+              <h4 class="fw-bold mb-0 text-body" id="detail-name">Kingdom of Eldoria</h4>
+              <span class="badge bg-primary-subtle text-primary border" id="detail-gov">Constitutional Monarchy</span>
+            </div>
+          </div>
+
+          <div class="border-top pt-3 small mb-3">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-secondary">Head of State:</span>
+              <span class="fw-bold text-body" id="detail-leader">King Alden IV</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-secondary">Capital City:</span>
+              <span class="fw-semibold text-body" id="detail-capital">Crown's Landing</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-secondary">National Tax Rate:</span>
+              <span class="fw-semibold text-body" id="detail-tax">8.0%</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-secondary">Currency:</span>
+              <span class="fw-semibold text-success">Credits (₡)</span>
+            </div>
+          </div>
+
+          <!-- Constitution Card -->
+          <div class="card border bg-body-tertiary p-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <h6 class="fw-bold mb-0 text-body small"><i class="bi bi-file-earmark-text text-primary me-1"></i> National Constitution</h6>
+              <span class="badge bg-secondary-subtle text-body border" id="detail-const-title">Royal Magna Carta</span>
+            </div>
+            <p class="text-secondary small mb-0 mt-2 fst-italic" id="detail-const-text" style="max-height: 160px; overflow-y: auto;">
+              Loading constitutional charter...
+            </p>
+          </div>
+
+          <div class="d-grid gap-2">
+            <a href="/government.html" class="btn btn-primary btn-sm">
+              <i class="bi bi-journal-bookmark me-1"></i> Inspect Parliamentary Laws & Elections
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Five Sovereign Civilizations Roster Cards -->
+    <h4 class="fw-bold text-body fs-5 mt-5 mb-3"><i class="bi bi-flag-fill text-primary me-2"></i>All Sovereign Civilizations of Planet Aethel</h4>
+    <div class="row g-3" id="nations-cards-row">
+      <div class="col-12 text-center text-secondary py-3">Loading nations...</div>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/navbar.js"></script>
+  <script>
+    let nations = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCyberNavbar('map');
+      loadNationsMapData();
+    });
+
+    async function loadNationsMapData() {
+      try {
+        const data = await apiFetch('/api/government/nations');
+        nations = data.nations || [];
+
+        renderNationsCards(nations);
+
+        if (nations.length > 0) {
+          selectCountry(nations[0].id);
+        }
+      } catch (err) {
+        showToast('Error loading map data: ' + err.message, 'danger');
+      }
+    }
+
+    function selectCountry(countryId) {
+      const c = nations.find(n => n.id === countryId) || nations[0];
+      if (!c) return;
+
+      // Update Map Node Highlights
+      document.querySelectorAll('.nation-node').forEach(node => node.classList.remove('nation-active'));
+      const marker = document.getElementById(`marker-${c.id}`);
+      if (marker) marker.classList.add('nation-active');
+
+      // Update Detail Panel
+      document.getElementById('detail-flag').innerText = c.flag_emoji || '🏛️';
+      document.getElementById('detail-name').innerText = c.name;
+      document.getElementById('detail-gov').innerText = c.government_type;
+      document.getElementById('detail-leader').innerText = `${c.leader_title || 'Leader'} ${c.leader_name || ''}`;
+      document.getElementById('detail-capital').innerText = c.capital_city || "Capital Spire";
+      document.getElementById('detail-tax').innerText = `${c.tax_rate || 8.0}%`;
+      document.getElementById('detail-const-title').innerText = c.constitution_title || 'Charter of Rights';
+      document.getElementById('detail-const-text').innerText = c.constitution_text || 'Constitutional text pending archival.';
+    }
+
+    function renderNationsCards(list) {
+      const row = document.getElementById('nations-cards-row');
+      if (list.length === 0) return;
+
+      row.innerHTML = list.map(n => `
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 border p-3 shadow-sm hover-shadow" style="cursor: pointer;" onclick="selectCountry(${n.id})">
+            <div class="d-flex align-items-center mb-2">
+              <span class="fs-2 me-2">${n.flag_emoji || '🏛️'}</span>
+              <div>
+                <h6 class="fw-bold text-body mb-0">${n.name}</h6>
+                <span class="badge bg-secondary-subtle text-body border" style="font-size: 0.72rem;">${n.government_type}</span>
+              </div>
+            </div>
+            <p class="text-secondary small mb-3">
+              Led by <strong>${n.leader_title || 'Leader'} ${n.leader_name}</strong>. Known for ${n.constitution_title || 'its constitutional order'}.
+            </p>
+            <div class="d-flex justify-content-between align-items-center border-top pt-2 small text-secondary">
+              <span>Tax Rate: ${n.tax_rate}%</span>
+              <button class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.75rem;" onclick="event.stopPropagation(); selectCountry(${n.id})">
+                Inspect
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
