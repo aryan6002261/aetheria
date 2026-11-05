@@ -214,3 +214,4 @@ router.post('/bank/withdraw', authenticate, requireCharacter, async (req, res) =
 });
 
 export default router;
+

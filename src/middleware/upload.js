@@ -45,3 +45,4 @@ export const uploadMedia = multer({
 export default {
   uploadMedia,
 };
+

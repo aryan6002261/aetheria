@@ -344,3 +344,4 @@ router.post('/progress-age', authenticate, requireCharacter, async (req, res) =>
 });
 
 export default router;
+

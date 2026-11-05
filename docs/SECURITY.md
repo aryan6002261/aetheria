@@ -44,3 +44,4 @@ Aetheria operates under a zero-trust model regarding client-side balances:
 * **Single-Vote Election Integrity:** The `votes` table enforces a database-level unique constraint (`UNIQUE(election_id, voter_profile_id)`) ensuring no duplicate voting is possible.
 * **Immutable Audit Logs:** All sensitive operations (logins, bans, transactions, votes) are written to the `audit_logs` table with IP addresses and metadata.
 * **Admin Moderation:** Administrative dashboard allows instant suspension or restoration of compromised accounts and review of citizen reports.
+

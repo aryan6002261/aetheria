@@ -63,3 +63,4 @@ router.get('/newspaper', optionalAuth, async (req, res) => {
 });
 
 export default router;
+

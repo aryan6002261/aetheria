@@ -52,3 +52,4 @@ function initSocketConnection() {
 document.addEventListener('DOMContentLoaded', () => {
   initSocketConnection();
 });
+

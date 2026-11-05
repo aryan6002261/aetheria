@@ -183,3 +183,4 @@ router.post('/promote', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

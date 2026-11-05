@@ -69,3 +69,4 @@ The simulation engine executes periodic background ticks:
 1. **Calendar Clock:** Advances planetary days and years (broadcasted in real-time to active user HUDs).
 2. **Autonomous NPC Behaviors:** NPCs simulate daily routines and post commentary to the planetary social feed.
 3. **The Veridian Chronicle:** Synthesizes recent database transactions, elections, and milestones into coherent journalistic dispatches.
+

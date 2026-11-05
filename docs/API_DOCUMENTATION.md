@@ -179,3 +179,4 @@ Queries ANI (Aetheria Navigation Intelligence) for contextual gameplay guidance.
 | `citizen_status` | Server -> Client | `{ "profileId": 1, "isOnline": true }` | Live citizen online beacon. |
 | `world_tick` | Server -> Client | `{ "worldYear": 2185, "worldDay": 143 }` | Live planetary calendar progression. |
 | `new_notification` | Server -> Client | Notification object | Instant toast alert for transfers, comments, etc. |
+

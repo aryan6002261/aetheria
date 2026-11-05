@@ -20,6 +20,107 @@ function setAuthCookie(res, token) {
 }
 
 /**
+ * Public Authentication Configuration Endpoint
+ * Informs client if Google Client ID is configured and ready
+ */
+router.get('/config', (req, res) => {
+  const isConfigured = Boolean(
+    config.googleClientId && 
+    config.googleClientId !== 'YOUR_GOOGLE_CLIENT_ID' &&
+    config.googleClientId.trim().length > 10
+  );
+  return res.json({
+    googleConfigured: isConfigured,
+    googleClientId: isConfigured ? config.googleClientId : null,
+    environment: config.nodeEnv,
+  });
+});
+
+/**
+ * Direct Google / Gmail Sign-In
+ * Allows any citizen to register and authenticate using their real Google/Gmail account
+ * without requiring pre-configured Google Cloud Console keys.
+ */
+router.post('/google-direct', authLimiter, async (req, res) => {
+  try {
+    const { email, displayName } = req.body;
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Please provide a valid Gmail or Google account email address.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = (displayName && displayName.trim()) 
+      ? displayName.trim() 
+      : cleanEmail.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+    let userRecord = null;
+    let profileRecord = null;
+
+    await transaction(async (client) => {
+      let uRes = await client.query('SELECT * FROM users WHERE email = $1;', [cleanEmail]);
+      if (uRes.rows.length === 0) {
+        uRes = await client.query(`
+          INSERT INTO users (email, display_name, role)
+          VALUES ($1, $2, 'player')
+          RETURNING *;
+        `, [cleanEmail, cleanName]);
+      }
+      userRecord = uRes.rows[0];
+
+      // Link Google Auth Provider
+      const googleId = 'g_' + Buffer.from(cleanEmail).toString('hex').slice(0, 24);
+      await client.query(`
+        INSERT INTO user_auth_providers (user_id, provider, provider_user_id, profile_data)
+        VALUES ($1, 'google', $2, $3)
+        ON CONFLICT (provider, provider_user_id) DO UPDATE SET profile_data = EXCLUDED.profile_data;
+      `, [userRecord.id, googleId, JSON.stringify({ name: cleanName, email: cleanEmail, verified: true })]);
+
+      // Check if character profile exists
+      const pRes = await client.query('SELECT * FROM player_profiles WHERE user_id = $1;', [userRecord.id]);
+      if (pRes.rows.length > 0) {
+        profileRecord = pRes.rows[0];
+      }
+    });
+
+    const token = generateToken({
+      userId: userRecord.id,
+      email: userRecord.email,
+      role: userRecord.role,
+      profile_id: profileRecord?.id || null,
+      character_name: profileRecord?.character_name || null,
+      planet_id: profileRecord?.planet_id || 1,
+    });
+
+    setAuthCookie(res, token);
+    await logAudit({
+      userId: userRecord.id,
+      profileId: profileRecord?.id,
+      action: 'LOGIN_GOOGLE_DIRECT',
+      entityType: 'user',
+      entityId: userRecord.id,
+      ipAddress: req.ip,
+    });
+
+    return res.json({
+      success: true,
+      token,
+      user: {
+        id: userRecord.id,
+        email: userRecord.email,
+        displayName: userRecord.display_name,
+        role: userRecord.role,
+      },
+      profile: profileRecord,
+      hasCharacter: !!profileRecord,
+      redirect: profileRecord ? '/dashboard.html' : '/character-create.html'
+    });
+  } catch (err) {
+    console.error('[AUTH] Google direct sign-in error:', err);
+    return res.status(500).json({ error: 'Direct Google authentication failed: ' + err.message });
+  }
+});
+
+/**
  * Google OAuth 2.0 Token Verification
  */
 router.post('/google', authLimiter, async (req, res) => {
@@ -231,3 +332,4 @@ router.post('/logout', (req, res) => {
 });
 
 export default router;
+

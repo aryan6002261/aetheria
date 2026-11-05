@@ -93,3 +93,4 @@ router.post('/:id/chat', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

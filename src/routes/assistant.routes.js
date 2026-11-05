@@ -36,3 +36,4 @@ router.post('/ask', optionalAuth, async (req, res) => {
 });
 
 export default router;
+

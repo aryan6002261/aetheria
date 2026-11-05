@@ -157,3 +157,4 @@ router.post('/:id/products', authenticate, requireCharacter, async (req, res) =>
 });
 
 export default router;
+

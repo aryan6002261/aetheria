@@ -111,3 +111,4 @@ router.post('/transfer-property', authenticate, requireCharacter, async (req, re
 });
 
 export default router;
+

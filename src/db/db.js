@@ -13,11 +13,13 @@ export async function initDb() {
 
   if (config.databaseUrl) {
     console.log('[DB] Connecting to PostgreSQL via DATABASE_URL...');
+    const isLocalhost = config.databaseUrl.includes('localhost') || config.databaseUrl.includes('127.0.0.1');
     pgPool = new pg.Pool({
       connectionString: config.databaseUrl,
-      max: 20,
+      ssl: isLocalhost ? false : { rejectUnauthorized: false },
+      max: process.env.VERCEL ? 3 : 20,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 10000,
     });
     // Test connection
     try {
@@ -25,6 +27,7 @@ export async function initDb() {
       client.release();
       isConnected = true;
       console.log('[DB] Connected to PostgreSQL successfully.');
+      await ensureSchemaAndSeed();
       return;
     } catch (err) {
       console.warn('[DB] Could not connect to DATABASE_URL. Falling back to persistent PGlite engine:', err.message);
@@ -34,12 +37,43 @@ export async function initDb() {
 
   // Fallback / Default: Embedded PGlite
   const resolvedDir = path.resolve(config.pgDataDir);
-  fs.mkdirSync(resolvedDir, { recursive: true });
+  try {
+    fs.mkdirSync(resolvedDir, { recursive: true });
+  } catch (e) {
+    // In read-only serverless filesystems if pgDataDir wasn't /tmp
+    console.warn('[DB] mkdir warning for pgDataDir:', e.message);
+  }
+
   console.log(`[DB] Initializing embedded persistent PostgreSQL engine at: ${resolvedDir}`);
   pgliteInstance = new PGlite(resolvedDir);
   await pgliteInstance.waitReady;
   isConnected = true;
   console.log('[DB] Embedded PostgreSQL (PGlite) engine is ready and active.');
+
+  await ensureSchemaAndSeed();
+}
+
+/**
+ * Automatically provisions tables and initial universe seed if the database is newly created
+ */
+async function ensureSchemaAndSeed() {
+  try {
+    const checkRes = await query(`
+      SELECT table_name FROM information_schema.tables 
+      WHERE table_schema = 'public' AND table_name = 'planets';
+    `);
+
+    if (!checkRes.rows || checkRes.rows.length === 0) {
+      console.log('[DB] No database tables found. Running automated schema migration and universe seed...');
+      const { runMigrations } = await import('./migrate.js');
+      await runMigrations();
+      const { seedDatabase } = await import('./seed.js');
+      await seedDatabase();
+      console.log('[DB] Automated universe setup complete.');
+    }
+  } catch (err) {
+    console.warn('[DB] Schema check notice:', err.message);
+  }
 }
 
 export async function query(text, params = []) {
@@ -126,4 +160,3 @@ export default {
   transaction,
   closeDb,
 };
-

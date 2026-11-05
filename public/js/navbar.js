@@ -235,3 +235,4 @@ async function handleAssistantQuery(e) {
     showToast('Failed to reach AI assistant: ' + err.message, 'danger');
   }
 }
+

@@ -102,3 +102,4 @@ router.post('/buy/:id', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

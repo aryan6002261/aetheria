@@ -118,3 +118,4 @@ router.post('/:id/claim', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

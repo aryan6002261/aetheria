@@ -284,3 +284,4 @@ router.post('/report', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

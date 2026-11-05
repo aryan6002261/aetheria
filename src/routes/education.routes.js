@@ -198,3 +198,4 @@ router.post('/graduate', authenticate, requireCharacter, async (req, res) => {
 });
 
 export default router;
+

@@ -106,9 +106,21 @@ To test real-time multiplayer interactions between multiple citizens immediately
 - **[Universe Architecture](docs/ARCHITECTURE.md)**
 - **[REST & Socket.IO API Reference](docs/API_DOCUMENTATION.md)**
 - **[Cybersecurity & Privacy Manual](docs/SECURITY.md)**
-- **[Production Deployment Guide](docs/DEPLOYMENT.md)**
+- **[Vercel Serverless Deployment Guide](docs/VERCEL_DEPLOYMENT.md)**
+- **[Standard Production Deployment Guide](docs/DEPLOYMENT.md)**
+
+---
+
+## ☁️ Deploy to Vercel in 1 Click
+Aetheria is pre-configured with `vercel.json` and a serverless API handler (`api/index.js`):
+1. Push code to GitHub.
+2. Import project into [Vercel](https://vercel.com).
+3. (Optional) Add `DATABASE_URL` in Vercel Environment Variables to connect a managed PostgreSQL instance (e.g. Neon or Supabase). If omitted, the embedded persistent PGlite engine auto-initializes in `/tmp`.
+4. Deploy! The database will auto-migrate and auto-seed on the very first incoming request.
+See **[Vercel Deployment Guide](docs/VERCEL_DEPLOYMENT.md)** for full details.
 
 ---
 
 ## 📜 License
 MIT License. Created for the Aetheria Persistent Civilization Project.
+

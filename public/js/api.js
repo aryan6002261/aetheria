@@ -100,3 +100,4 @@ function formatCredits(val) {
   const num = parseFloat(val) || 0;
   return `₡${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
+

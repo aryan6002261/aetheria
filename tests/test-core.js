@@ -176,3 +176,4 @@ runCoreTests()
     await closeDb();
     process.exit(1);
   });
+
